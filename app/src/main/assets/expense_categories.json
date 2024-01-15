@@ -1,0 +1,52 @@
+[
+  {
+    "categoryIcon" : "food_icon",
+    "categoryName" : "Food",
+    "isSelected" : false
+  },
+  {
+    "categoryIcon" : "restaurant_icon",
+    "categoryName" : "Restaurant",
+    "isSelected" : false
+  },
+  {
+    "categoryIcon" : "health_icon",
+    "categoryName" : "Health",
+    "isSelected" : false
+  },
+  {
+    "categoryIcon" : "kids_icon",
+    "categoryName" : "Kids",
+    "isSelected" : false
+  },
+  {
+    "categoryIcon" : "entertainment_icon",
+    "categoryName" : "Entertainment",
+    "isSelected" : false
+  },
+  {
+    "categoryIcon" : "transport_icon",
+    "categoryName" : "Public transport",
+    "isSelected" : false
+  },
+  {
+    "categoryIcon" : "selfcare_icon",
+    "categoryName" : "Selfcare",
+    "isSelected" : false
+  },
+  {
+    "categoryIcon" : "gift_icon",
+    "categoryName" : "Gifts",
+    "isSelected" : false
+  },
+  {
+  "categoryIcon" : "purchases_icon",
+  "categoryName" : "Purchases",
+  "isSelected" : false
+  },
+  {
+    "categoryIcon" : "car_icon",
+    "categoryName" : "Car",
+    "isSelected" : false
+  }
+]

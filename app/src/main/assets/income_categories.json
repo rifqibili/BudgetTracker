@@ -1,0 +1,22 @@
+[
+  {
+    "categoryIcon" : "salary_icon",
+    "categoryName" : "Salary",
+    "isSelected" : false
+  },
+  {
+    "categoryIcon" : "cashback_icon",
+    "categoryName" : "Cashback",
+    "isSelected" : false
+  },
+  {
+    "categoryIcon" : "percent_icon",
+    "categoryName" : "Deposit",
+    "isSelected" : false
+  },
+  {
+    "categoryIcon" : "gift_icon",
+    "categoryName" : "Gifts",
+    "isSelected" : false
+  }
+]

@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/CoordinatorLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".operations.OperationsFragment">
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/addOperation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@android:drawable/ic_input_add"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/addIncome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/baseline_add_24"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@+id/addOperation"
+            app:layout_constraintEnd_toEndOf="@+id/addOperation" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/addExpense"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:clickable="true"
+            android:src="@drawable/baseline_remove_24"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@+id/addIncome"
+            app:layout_constraintEnd_toEndOf="@+id/addIncome"
+            android:focusable="true" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/addTransfer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="10dp"
+            android:src="@drawable/baseline_swap_horiz_24"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@+id/addExpense"
+            app:layout_constraintEnd_toEndOf="@+id/addExpense" />
+
+
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/balanceLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="10dp"
+                android:paddingTop="10dp"
+                android:text="Total balance"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/totalAmount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp"
+                android:paddingBottom="15dp"
+                android:text="TextView"
+                android:textSize="34sp" />
+
+        </LinearLayout>
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/operationsList"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <View
+            android:id="@+id/overlay"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="#80000000"
+            android:visibility="gone" />
+
+        <View
+            android:id="@+id/bgTransfer"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/fab_text_bg"
+            android:padding="10dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/addTransfer"
+            app:layout_constraintEnd_toEndOf="@+id/addTransfer"
+            app:layout_constraintStart_toStartOf="@+id/transferText"
+            app:layout_constraintTop_toTopOf="@+id/addTransfer" />
+
+        <View
+            android:id="@+id/bgExpense"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/fab_text_bg"
+            android:padding="10dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/addExpense"
+            app:layout_constraintEnd_toEndOf="@+id/addExpense"
+            app:layout_constraintStart_toStartOf="@+id/expenseText"
+            app:layout_constraintTop_toTopOf="@+id/addExpense" />
+
+        <View
+            android:id="@+id/bgIncome"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/fab_text_bg"
+            android:padding="10dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/addIncome"
+            app:layout_constraintEnd_toEndOf="@+id/addIncome"
+            app:layout_constraintStart_toStartOf="@+id/incomeText"
+            app:layout_constraintTop_toTopOf="@+id/addIncome" />
+
+        <TextView
+            android:id="@+id/transferText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="10dp"
+            android:paddingEnd="0dp"
+            android:paddingBottom="6dp"
+            android:text="@string/transfer"
+            android:textSize="24sp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/addTransfer"
+            app:layout_constraintEnd_toStartOf="@+id/addTransfer"
+            app:layout_constraintTop_toTopOf="@+id/addTransfer"
+            app:layout_constraintVertical_bias="0.586" />
+
+        <TextView
+            android:id="@+id/expenseText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="10dp"
+            android:paddingEnd="0dp"
+            android:paddingBottom="6dp"
+            android:text="@string/expense"
+            android:textSize="24sp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/addExpense"
+            app:layout_constraintEnd_toStartOf="@+id/addExpense"
+            app:layout_constraintTop_toTopOf="@+id/addExpense" />
+
+        <TextView
+            android:id="@+id/incomeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="10dp"
+            android:paddingEnd="0dp"
+            android:paddingBottom="6dp"
+            android:text="@string/income"
+            android:textSize="24sp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/addIncome"
+            app:layout_constraintEnd_toStartOf="@+id/addIncome"
+            app:layout_constraintTop_toTopOf="@+id/addIncome" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <FrameLayout
+        android:id="@+id/snackbarContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom">
+    </FrameLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
