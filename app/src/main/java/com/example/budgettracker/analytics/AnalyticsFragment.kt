@@ -26,7 +26,7 @@ class AnalyticsFragment : Fragment() {
         _binding = FragmentAnalyticsBinding.inflate(inflater, container, false)
         val root : View = binding.root
 
-        val fragmentList = listOf(ExpensePieFragment(), IncomePieFragment(), ExpenseBarFragment())
+        val fragmentList = listOf(ExpensePieFragment(), IncomePieFragment(), ExpenseBarFragment(), IncomeBarFragment())
         val tabsText = resources.getStringArray(R.array.tabs)
 
         var adapter = AnalyticsAdapter(requireActivity(), fragmentList)

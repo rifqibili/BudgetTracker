@@ -2,14 +2,14 @@ package com.example.budgettracker.analytics
 
 import android.graphics.Color
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.budgettracker.OperationsViewModel
 import com.example.budgettracker.R
-import com.example.budgettracker.databinding.FragmentExpenseBarBinding
+import com.example.budgettracker.databinding.FragmentIncomeBarBinding
 import com.example.budgettracker.operations.OperationsData
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
@@ -21,17 +21,14 @@ import com.github.mikephil.charting.formatter.LargeValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.ColorTemplate
-import com.github.mikephil.charting.utils.ColorTemplate.rgb
 import com.google.android.material.color.MaterialColors
 import java.util.Calendar
 
-
-class ExpenseBarFragment : Fragment() {
-
-    private var _binding : FragmentExpenseBarBinding? = null
+class IncomeBarFragment : Fragment() {
+    private var _binding : FragmentIncomeBarBinding? = null
     private val binding get() = _binding!!
     private lateinit var months : Array<String>
-    var expenseMap = mutableMapOf<Float, Float>()
+    var incomeMap = mutableMapOf<Float, Float>()
     val calendar = Calendar.getInstance()
     val existingYears = ArrayList<Int>()
     lateinit var labels : Array<String>
@@ -42,44 +39,46 @@ class ExpenseBarFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val operationsViewModel = ViewModelProvider(requireActivity()).get(OperationsViewModel::class.java)
-        _binding = FragmentExpenseBarBinding.inflate(inflater, container, false)
+        _binding = FragmentIncomeBarBinding.inflate(inflater, container, false)
         val root : View = binding.root
 
         val customColors = intArrayOf(
-            rgb("#00BCD4") // blue
+            ColorTemplate.rgb("#00BCD4") // blue
         )
         months = resources.getStringArray(R.array.shortMonths)
         labels = months
         labels.reverse()
-        operationsViewModel.divideExpenses(operationsViewModel.operationsList.value!!)
+        operationsViewModel.divideIncomes(operationsViewModel.operationsList.value!!)
 
-        val expenseDataList = operationsViewModel.divideOperationsByMonth(operationsViewModel.allExpenses)
-        if (expenseDataList.isNotEmpty()) {
-            calendar.time = expenseDataList[0][0].date
+        val incomeDataList = operationsViewModel.divideOperationsByMonth(operationsViewModel.allIncomes)
+        //var selectedYear = calendar.get(Calendar.YEAR)
+        if (incomeDataList.isNotEmpty()) {
+            calendar.time = incomeDataList[0][0].date
             selectedYear = calendar.get(Calendar.YEAR)
             binding.yearText.text = selectedYear.toString()
         }
         else {
             binding.yearText.text = "No data avalible"
         }
-        setupBar(selectedYear, expenseDataList, customColors)
+
+        setupBar(selectedYear, incomeDataList, customColors)
 
         binding.yearBack.setOnClickListener {
             if (selectedYear - 1 in existingYears) {
                 selectedYear--
-                setupBar(selectedYear, expenseDataList, customColors)
+                setupBar(selectedYear, incomeDataList, customColors)
                 binding.yearText.text = selectedYear.toString()
             }
         }
         binding.yearForward.setOnClickListener {
             if (selectedYear + 1 in existingYears) {
                 selectedYear++
-                setupBar(selectedYear, expenseDataList, customColors)
+                setupBar(selectedYear, incomeDataList, customColors)
                 binding.yearText.text = selectedYear.toString()
             }
         }
 
-        binding.barChart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener{
+        binding.barChart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
             override fun onValueSelected(e: Entry, h: Highlight?) {
                 val x = e.x.toString()
                 val y = e.y
@@ -100,7 +99,7 @@ class ExpenseBarFragment : Fragment() {
 
     private fun setupBar(selectedYear : Int, expenseDataList : ArrayList<ArrayList<OperationsData>>, customColors : IntArray) {
         val entries = ArrayList<BarEntry>()
-        expenseMap = mutableMapOf()
+        incomeMap = mutableMapOf()
 
 
         if (expenseDataList.isNotEmpty()) {
@@ -112,7 +111,7 @@ class ExpenseBarFragment : Fragment() {
                 if (year == selectedYear) {
                     for (j in 0 until expenseDataList[i].size) {
                         val amount = expenseDataList[i][j].amount.toInt()
-                        expenseMap[month] = expenseMap.getOrDefault(month, 0f) + amount
+                        incomeMap[month] = incomeMap.getOrDefault(month, 0f) + amount
                     }
                 }
             }
@@ -122,7 +121,7 @@ class ExpenseBarFragment : Fragment() {
 
         }
 
-        expenseMap.forEach { (month, value) ->
+        incomeMap.forEach { (month, value) ->
             entries.add(BarEntry(month, value))
         }
 
