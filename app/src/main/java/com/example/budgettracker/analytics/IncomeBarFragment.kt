@@ -47,7 +47,6 @@ class IncomeBarFragment : Fragment() {
         )
         months = resources.getStringArray(R.array.shortMonths)
         labels = months
-        labels.reverse()
         operationsViewModel.divideIncomes(operationsViewModel.operationsList.value!!)
 
         val incomeDataList = operationsViewModel.divideOperationsByMonth(operationsViewModel.allIncomes)
@@ -139,14 +138,13 @@ class IncomeBarFragment : Fragment() {
         binding.barChart.legend.isEnabled = false
 
         //binding.barChart.animateY(1000)
-        labels.reverse()
 
         binding.barChart.xAxis.gridColor = MaterialColors.getColor(requireContext(), com.google.android.material.R.attr.colorOnPrimary, Color.BLACK)
         binding.barChart.axisLeft.isEnabled = false
         binding.barChart.axisRight.isEnabled = false
         binding.barChart.xAxis.valueFormatter = IndexAxisValueFormatter(labels)
         binding.barChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
-        binding.barChart.xAxis.labelCount = entries.size
+        binding.barChart.xAxis.labelCount = labels.size
         binding.barChart.isDoubleTapToZoomEnabled = false
         binding.barChart.isScaleXEnabled = false
         binding.barChart.isScaleYEnabled = false

@@ -30,7 +30,6 @@ class AddAccountFragment : Fragment() {
         _binding = FragmentAddAccountBinding.inflate(inflater, container, false)
         val root : View = binding.root
 
-
         val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         navBar.visibility = View.GONE
 
@@ -76,21 +75,27 @@ class AddAccountFragment : Fragment() {
         }
 
         binding.save.setOnClickListener {
-            if (name.isEmpty()){ binding.nameLayout.error = "Please enter a valid name" }
+            if (name.isEmpty() || !operationsViewModel.isUniqueAccountName(name)) {
+                binding.nameLayout.error = "Please enter a valid, unique name"
+            }
             else
             {
                 operationsViewModel.addAccount(AccountsData(0, name, balance, accountType, binding.savings.isChecked))
-                findNavController().navigate(R.id.action_addAccountFragment_to_accounts)
+                findNavController().popBackStack()
+                //findNavController().navigate(R.id.action_addAccountFragment_to_accounts)
             }
 
         }
         binding.back.setOnClickListener {
-            findNavController().navigate(R.id.action_addAccountFragment_to_accounts)
+            //findNavController().navigate(R.id.action_addAccountFragment_to_accounts)
+            findNavController().popBackStack()
         }
 
 
         return root
     }
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -16,10 +16,14 @@
             app:enterAnim="@anim/from_right"
             app:exitAnim="@anim/to_left"
             app:popEnterAnim="@anim/from_left"
-            app:popExitAnim="@anim/to_right" />
+            app:popExitAnim="@anim/to_right"/>
         <action
             android:id="@+id/action_accounts_to_accountInformationFragment"
-            app:destination="@id/accountInformationFragment" />
+            app:destination="@id/accountInformationFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
     </fragment>
     <fragment
         android:id="@+id/operations"
@@ -46,7 +50,7 @@
             app:enterAnim="@anim/from_right"
             app:exitAnim="@anim/to_left"
             app:popEnterAnim="@anim/from_left"
-            app:popExitAnim="@anim/to_right"/>
+            app:popExitAnim="@anim/to_right" />
     </fragment>
     <fragment
         android:id="@+id/addExpenseFragment"
@@ -62,11 +66,16 @@
         <action
             android:id="@+id/action_addExpenseFragment_to_addIncomeFragment"
             app:destination="@id/addIncomeFragment"
-            app:popUpTo="@id/operations" />
+            app:popUpTo="@id/operations"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right"
+            />
         <action
             android:id="@+id/action_addExpenseFragment_to_transferFragment"
             app:destination="@id/transferFragment"
-            app:popUpTo="@id/operations" />
+            app:popUpTo="@id/operations"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right"/>
     </fragment>
     <fragment
         android:id="@+id/addIncomeFragment"
@@ -82,24 +91,21 @@
         <action
             android:id="@+id/action_addIncomeFragment_to_addExpenseFragment"
             app:destination="@id/addExpenseFragment"
-            app:popUpTo="@id/operations" />
+            app:popUpTo="@id/operations"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right"/>
         <action
             android:id="@+id/action_addIncomeFragment_to_transferFragment"
             app:destination="@id/transferFragment"
-            app:popUpTo="@id/operations" />
+            app:popUpTo="@id/operations"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right"/>
     </fragment>
     <fragment
         android:id="@+id/addAccountFragment"
         android:name="com.example.budgettracker.accounts.AddAccountFragment"
         android:label="fragment_add_account"
-        tools:layout="@layout/fragment_add_account" >
-        <action
-            android:id="@+id/action_addAccountFragment_to_accounts"
-            app:destination="@id/accounts"
-            app:enterAnim="@anim/from_left"
-            app:exitAnim="@anim/to_right"
-            app:popUpTo="@id/operations" />
-    </fragment>
+        tools:layout="@layout/fragment_add_account" />
     <fragment
         android:id="@+id/transferFragment"
         android:name="com.example.budgettracker.operations.transfer.TransferFragment"
@@ -109,15 +115,19 @@
             android:id="@+id/action_transferFragment_to_operations"
             app:destination="@id/operations"
             app:enterAnim="@anim/from_left"
-            app:exitAnim="@anim/to_right"/>
+            app:exitAnim="@anim/to_right" />
         <action
             android:id="@+id/action_transferFragment_to_addIncomeFragment"
             app:destination="@id/addIncomeFragment"
-            app:popUpTo="@id/operations" />
+            app:popUpTo="@id/operations"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right"/>
         <action
             android:id="@+id/action_transferFragment_to_addExpenseFragment"
             app:destination="@id/addExpenseFragment"
-            app:popUpTo="@id/operations" />
+            app:popUpTo="@id/operations"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right"/>
     </fragment>
     <fragment
         android:id="@+id/analytics"
@@ -128,10 +138,52 @@
         android:id="@+id/accountInformationFragment"
         android:name="com.example.budgettracker.accounts.AccountInformationFragment"
         android:label="fragment_account_information"
-        tools:layout="@layout/fragment_account_information" >
+        tools:layout="@layout/fragment_account_information" />
+    <fragment
+        android:id="@+id/incomeBarFragment"
+        android:name="com.example.budgettracker.analytics.IncomeBarFragment"
+        android:label="IncomeBarFragment" />
+    <fragment
+        android:id="@+id/incomePieFragment"
+        android:name="com.example.budgettracker.analytics.IncomePieFragment"
+        android:label="IncomePieFragment" />
+    <fragment
+        android:id="@+id/expenseBarFragment"
+        android:name="com.example.budgettracker.analytics.ExpenseBarFragment"
+        android:label="fragment_expense_bar"
+        tools:layout="@layout/fragment_expense_bar" />
+    <fragment
+        android:id="@+id/expensePieFragment"
+        android:name="com.example.budgettracker.analytics.ExpensePieFragment"
+        android:label="fragment_income_pie"
+        tools:layout="@layout/fragment_income_pie" />
+    <dialog
+        android:id="@+id/informationFragment"
+        android:name="com.example.budgettracker.operations.InformationFragment"
+        android:label="fragment_information"
+        tools:layout="@layout/fragment_information" >
         <action
-            android:id="@+id/action_accountInformationFragment_to_accounts"
-            app:destination="@id/accounts"
-            app:popUpTo="@id/operations" />
-    </fragment>
+            android:id="@+id/action_informationFragment_to_changeOperationFragment"
+            app:destination="@id/changeOperationFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right"/>
+        <action
+            android:id="@+id/action_informationFragment_to_changeTransferFragment"
+            app:destination="@id/changeTransferFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right"/>
+    </dialog>
+    <fragment
+        android:id="@+id/changeOperationFragment"
+        android:name="com.example.budgettracker.operations.transfer.ChangeOperationFragment"
+        android:label="ChangeOperationFragment" />
+    <fragment
+        android:id="@+id/changeTransferFragment"
+        android:name="com.example.budgettracker.operations.ChangeTransferFragment"
+        android:label="fragment_change_transfer"
+        tools:layout="@layout/fragment_change_transfer" />
 </navigation>

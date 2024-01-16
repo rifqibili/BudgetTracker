@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.budgettracker.LinearRegressionModel
 import com.example.budgettracker.OperationsViewModel
 import com.example.budgettracker.R
 import com.example.budgettracker.databinding.FragmentExpenseBarBinding
@@ -20,7 +21,6 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.LargeValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
-import com.github.mikephil.charting.utils.ColorTemplate
 import com.github.mikephil.charting.utils.ColorTemplate.rgb
 import com.google.android.material.color.MaterialColors
 import java.util.Calendar
@@ -36,6 +36,8 @@ class ExpenseBarFragment : Fragment() {
     val existingYears = ArrayList<Int>()
     lateinit var labels : Array<String>
     var selectedYear = -1
+    val expensesEveryMonts = arrayListOf<Double>()
+    val allMonths = arrayListOf<Double>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,7 +52,6 @@ class ExpenseBarFragment : Fragment() {
         )
         months = resources.getStringArray(R.array.shortMonths)
         labels = months
-        labels.reverse()
         operationsViewModel.divideExpenses(operationsViewModel.operationsList.value!!)
 
         val expenseDataList = operationsViewModel.divideOperationsByMonth(operationsViewModel.allExpenses)
@@ -94,7 +95,6 @@ class ExpenseBarFragment : Fragment() {
         })
 
 
-
         return root
     }
 
@@ -102,13 +102,18 @@ class ExpenseBarFragment : Fragment() {
         val entries = ArrayList<BarEntry>()
         expenseMap = mutableMapOf()
 
-
+        var index = 0.0
+        expensesEveryMonts.clear()
+        allMonths.clear()
         if (expenseDataList.isNotEmpty()) {
             for (i in 0 until expenseDataList.size) {
                 calendar.time = expenseDataList[i][0].date
                 val month = calendar.get(Calendar.MONTH).toFloat()
                 val year = calendar.get(Calendar.YEAR)
                 existingYears.add(year)
+                expensesEveryMonts.add(expenseDataList[i].sumOf { it.amount.toDouble() })
+                index += 1.0
+                allMonths.add(index)
                 if (year == selectedYear) {
                     for (j in 0 until expenseDataList[i].size) {
                         val amount = expenseDataList[i][j].amount.toInt()
@@ -121,6 +126,14 @@ class ExpenseBarFragment : Fragment() {
         else {
 
         }
+        allMonths.reverse()
+        val linearRegressionModel = LinearRegressionModel(allMonths.toDoubleArray(), expensesEveryMonts.toDoubleArray())
+        val nextMonth = index + 1.0
+        val predictedExpense = linearRegressionModel.predict(nextMonth)
+        if (allMonths.size > 1)
+            binding.prediction.text = "%.1f".format(predictedExpense)
+        else
+            binding.prediction.text = "Not enough data"
 
         expenseMap.forEach { (month, value) ->
             entries.add(BarEntry(month, value))
@@ -139,15 +152,15 @@ class ExpenseBarFragment : Fragment() {
         binding.barChart.description.isEnabled = false
         binding.barChart.legend.isEnabled = false
 
-        //binding.barChart.animateY(1000)
-        labels.reverse()
+        binding.barChart.animateY(1000)
 
         binding.barChart.xAxis.gridColor = MaterialColors.getColor(requireContext(), com.google.android.material.R.attr.colorOnPrimary, Color.BLACK)
         binding.barChart.axisLeft.isEnabled = false
+        binding.barChart.axisLeft.axisMinimum = 0f
         binding.barChart.axisRight.isEnabled = false
         binding.barChart.xAxis.valueFormatter = IndexAxisValueFormatter(labels)
         binding.barChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
-        binding.barChart.xAxis.labelCount = entries.size
+        binding.barChart.xAxis.labelCount = labels.size
         binding.barChart.isDoubleTapToZoomEnabled = false
         binding.barChart.isScaleXEnabled = false
         binding.barChart.isScaleYEnabled = false

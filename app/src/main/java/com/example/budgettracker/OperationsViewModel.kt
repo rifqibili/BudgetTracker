@@ -15,7 +15,6 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 
-//class OperationsViewModel : ViewModel() {
 class OperationsViewModel(application: Application) : AndroidViewModel(application){
 
 
@@ -29,8 +28,26 @@ class OperationsViewModel(application: Application) : AndroidViewModel(applicati
     val savingsAccounts = arrayListOf<AccountsData>()
     val allExpenses = arrayListOf<OperationsData>()
     val allIncomes = arrayListOf<OperationsData>()
-    var selectedAccount = 0
+    var listForInformation = listOf<OperationsData>()
+    var selectedAccountIndex = 0
+    var isSavingsSelected = false
+    var selectedOperationIndex = 0
+    lateinit var operationForChange : OperationsData
 
+    fun deleteAccount(account: AccountsData) {
+        viewModelScope.launch(Dispatchers.IO) {
+            accountsDao.deleteAccount(account)
+        }
+    }
+    fun deleteAccountOperations(account : AccountsData) {
+        viewModelScope.launch(Dispatchers.IO) {
+            for (element in operationsList.value!!) {
+                if (element.account == account.name) {
+                    operationsDao.deleteOperation(element)
+                }
+            }
+        }
+    }
     fun deleteOperation(operation : OperationsData) {
         viewModelScope.launch(Dispatchers.IO) {
             operationsDao.deleteOperation(operation)
@@ -46,6 +63,12 @@ class OperationsViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
 
+    fun updateOperation(operation: OperationsData) {
+        viewModelScope.launch(Dispatchers.IO) {
+            operationsDao.updateOperation(operation)
+        }
+    }
+
     fun divideAccounts(){
         val allAccounts = allAccounts.value
         savingsAccounts.clear()
@@ -53,8 +76,7 @@ class OperationsViewModel(application: Application) : AndroidViewModel(applicati
         for (i in 0 until allAccounts!!.size) {
             if (allAccounts[i].isSavings) {
                 savingsAccounts.add(allAccounts[i])
-            }
-            else
+            } else
                 paymentAccounts.add(allAccounts[i])
         }
     }
@@ -95,6 +117,14 @@ class OperationsViewModel(application: Application) : AndroidViewModel(applicati
             }
         }
         return result
+    }
+
+    fun isUniqueAccountName(name : String) : Boolean {
+        for (element in allAccounts.value!!) {
+            if (element.name == name)
+                return false
+        }
+        return true
     }
 
     fun divideOperationsByMonth(list : List<OperationsData>) : ArrayList<ArrayList<OperationsData>> {

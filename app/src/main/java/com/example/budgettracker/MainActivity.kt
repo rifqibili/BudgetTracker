@@ -2,9 +2,12 @@ package com.example.budgettracker
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.View
+import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.ui.setupWithNavController
 import com.example.budgettracker.databinding.ActivityMainBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -25,7 +28,6 @@ class MainActivity : AppCompatActivity() {
                 navigationBar.visibility = View.VISIBLE
             }
         }
-
-
     }
+
 }

@@ -32,8 +32,10 @@ class AccountsAdapter(val list: List<AccountsData>, val findNavController: NavCo
         holder.balance.text = list[position].balance
         holder.account.text = list[position].name
         holder.itemView.setOnClickListener {
-            viewModel.selectedAccount = position
+            viewModel.isSavingsSelected = list[position].isSavings
+            viewModel.selectedAccountIndex = position
             findNavController.navigate(R.id.action_accounts_to_accountInformationFragment)
         }
+
     }
 }

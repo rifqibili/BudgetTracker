@@ -66,7 +66,7 @@ class ExpensePieFragment : Fragment() {
         if (expenseDataList.isNotEmpty()){
             val resultList = operationsViewModel.collectByCategory(expenseDataList[selectedMonthIndex])
             for (i in 0 until resultList.size) {
-                resultList[i].color = customColors[i]
+                resultList[i].color = customColors[i % customColors.size]
             }
             resultList.sortByDescending { it.amount.toInt() }
             binding.operationsRV.adapter = PieAdapter(resultList)

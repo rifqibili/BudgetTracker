@@ -29,15 +29,12 @@ class AccountsFragment : Fragment() {
         _binding = FragmentAccountsBinding.inflate(inflater, container, false)
         val root : View = binding.root
 
-
         val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         navBar.visibility = View.VISIBLE
-
 
         binding.addAccount.setOnClickListener { findNavController().navigate(R.id.action_accounts_to_addAccountFragment) }
 
         binding.accountsRV.layoutManager = LinearLayoutManager(context)
-
 
         operationsViewModel.allAccounts.observe(viewLifecycleOwner, Observer {
             operationsViewModel.total()

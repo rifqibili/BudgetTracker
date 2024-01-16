@@ -10,6 +10,7 @@
         <item name="colorOnSecondary">@color/black</item>
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorOnPrimaryContainer">@color/white</item>
+        <item name="colorOnSecondaryContainer">#2B2B2B</item>
     </style>
 
     <style name="Theme.BudgetTracker" parent="Base.Theme.BudgetTracker" />

@@ -24,7 +24,6 @@ class ExpenseAdapter(val list : List<AddData>, val viewModel: OperationsViewMode
                 handleRadioButtonChecks(adapterPosition)
             }
         }
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -49,6 +48,7 @@ class ExpenseAdapter(val list : List<AddData>, val viewModel: OperationsViewMode
                 lastCheckedPosition = 0
             }
         }
+
 
         if (holder.button.isChecked){
             val expenseInfo = AddData(list[position].categoryIcon, list[position].categoryName, true)

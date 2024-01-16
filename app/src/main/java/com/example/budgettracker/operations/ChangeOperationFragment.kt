@@ -1,4 +1,4 @@
-package com.example.budgettracker.operations.expense
+package com.example.budgettracker.operations.transfer
 
 import android.app.DatePickerDialog
 import android.graphics.Color
@@ -15,45 +15,55 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.budgettracker.R
-import com.example.budgettracker.databinding.FragmentAddExpenseBinding
 import com.example.budgettracker.operations.OperationsData
 import com.example.budgettracker.OperationsViewModel
+import com.example.budgettracker.databinding.FragmentChangeOperationBinding
+import com.example.budgettracker.operations.expense.AddData
+import com.example.budgettracker.operations.expense.ExpenseAdapter
+
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.GsonBuilder
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import kotlin.math.abs
 
 
-class ExpenseFragment : Fragment() {
+class ChangeOperationFragment : Fragment() {
 
-    private var _binding : FragmentAddExpenseBinding? = null
+    private var _binding : FragmentChangeOperationBinding? = null
     private val binding get() = _binding!!
     private lateinit var operation : OperationsData
-    private lateinit var list: List<AddData>
+    private lateinit var list: MutableList<AddData>
     private var calendar = Calendar.getInstance()
     private lateinit var pickedDate : Date
     private var accountName = ""
-
+    private var amountValue = "0"
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         val operationsViewModel = ViewModelProvider(requireActivity()).get(OperationsViewModel::class.java)
-        _binding = FragmentAddExpenseBinding.inflate(inflater, container, false)
+        _binding = FragmentChangeOperationBinding.inflate(inflater, container, false)
         val root : View = binding.root
-
 
         val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         navBar.visibility = View.GONE
 
-        binding.expenseButton.isChecked = true
-        binding.expenseButton.setTextColor(Color.WHITE)
         binding.back.setOnClickListener{
-            findNavController().navigate(R.id.action_addExpenseFragment_to_operations)
+            findNavController().popBackStack()
         }
-        var amountValue = "0"
+        operation = OperationsData(0, "", 0, "", operationsViewModel.operationForChange.type, calendar.time, "", "", false, 0)
+        amountValue = operationsViewModel.operationForChange.amount
+        accountName = operationsViewModel.operationForChange.account
+        pickedDate = operationsViewModel.operationForChange.date
+        var category = operationsViewModel.operationForChange.category
+
+        binding.amount.setText(amountValue)
+
+
         binding.amount.addTextChangedListener(
             object : TextWatcher{
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
@@ -66,15 +76,30 @@ class ExpenseFragment : Fragment() {
                 }
             }
         )
-        val result = context?.assets
+        var result = context?.assets
             ?.open("expense_categories.json")
             ?.bufferedReader()
             .use { it!!.readText() }
+        if (operation.type == "Income") {
+            result = context?.assets
+                ?.open("income_categories.json")
+                ?.bufferedReader()
+                .use { it!!.readText() }
+        }
         val gson = GsonBuilder().create()
-        list = gson.fromJson(result,Array<AddData>::class.java).toList()
+        list = gson.fromJson(result,Array<AddData>::class.java).toMutableList()
 
 
         binding.categorySelect.layoutManager = GridLayoutManager(context, 2, GridLayoutManager.HORIZONTAL, false)
+        if (operation.type == "Income")
+            binding.categorySelect.layoutManager = GridLayoutManager(context, 1, GridLayoutManager.HORIZONTAL, false)
+        for (element in list) {
+            if (element.categoryName == category) {
+                list.remove(element)
+                list.add(0, element)
+                break
+            }
+        }
         binding.categorySelect.adapter = ExpenseAdapter(list, operationsViewModel)
         binding.save.setOnClickListener {
             if (accountName == ""){
@@ -83,34 +108,24 @@ class ExpenseFragment : Fragment() {
             else{
                 operationsViewModel.expenseList.observe(viewLifecycleOwner, Observer {
                     val icon = requireContext().resources.getIdentifier(it.last().categoryIcon, "drawable", context?.packageName)
-                    operation = OperationsData(0, amountValue, icon , it.last().categoryName, "Expense", pickedDate, accountName, "", false, 0)
+
+                    operation.account = accountName
+                    operation.category = it.last().categoryName
+                    operation.icon = icon
+                    operation.date = pickedDate
+                    operation.amount = amountValue
+
+                    operationsViewModel.deleteOperation(operationsViewModel.operationForChange)
                     operationsViewModel.addOperation(operation)
+
                     operationsViewModel.clearExpense()
                 })
-                findNavController().navigate(R.id.action_addExpenseFragment_to_operations)
+                findNavController().popBackStack()
             }
 
         }
-        binding.radioGroup.setOnCheckedChangeListener { group, checkedId ->
-            when(checkedId){
-                R.id.incomeButton -> {
-                    binding.incomeButton.setTextColor(Color.WHITE)
-                    binding.expenseButton.setTextColor(Color.BLACK)
-                    binding.transferButton.setTextColor(Color.BLACK)
-                    findNavController().navigate(R.id.action_addExpenseFragment_to_addIncomeFragment)
-                }
-                R.id.transferButton -> {
-                    binding.incomeButton.setTextColor(Color.BLACK)
-                    binding.expenseButton.setTextColor(Color.BLACK)
-                    binding.transferButton.setTextColor(Color.WHITE)
-                    findNavController().navigate(R.id.action_addExpenseFragment_to_transferFragment)
-                }
-            }
 
-        }
-        val today = Calendar.getInstance()
         val dateFormat = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
-        pickedDate = today.time
         binding.dateButton.text = dateFormat.format(pickedDate)
         binding.dateButton.setOnClickListener {
             val datePickerDialog = DatePickerDialog(requireContext(), {DatePicker, year: Int, monthOfYear: Int, dayOfMonth: Int ->
@@ -126,7 +141,9 @@ class ExpenseFragment : Fragment() {
             )
             datePickerDialog.show()
         }
+
         val types = ArrayList<String>()
+
         operationsViewModel.allAccounts.observe(viewLifecycleOwner, Observer {
             types.clear()
             for (element in it){
@@ -134,12 +151,27 @@ class ExpenseFragment : Fragment() {
             }
         })
 
+
         val adapter = ArrayAdapter(requireContext(), R.layout.account_spinner_layout, R.id.accountName, types)
         binding.accountType.setAdapter(adapter)
 
+        binding.accountType.setText(accountName, false)
         binding.accountType.setOnItemClickListener { parent, view, position, id ->
             accountName = types[position]
         }
+
+        binding.delete.setOnClickListener {
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Delete an operation?")
+                .setPositiveButton("YES") { dialog, which ->
+                    operationsViewModel.deleteOperation(operationsViewModel.operationForChange)
+                    findNavController().popBackStack()
+                }
+                .setNegativeButton("NO") {dialog, which ->
+                }
+                .show()
+        }
+
 
         return root
     }
@@ -148,8 +180,6 @@ class ExpenseFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-
-
 
 
 }

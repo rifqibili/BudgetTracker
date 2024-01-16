@@ -1,11 +1,13 @@
 package com.example.budgettracker.operations
 
-import android.graphics.Color
+
+import android.annotation.SuppressLint
+import android.graphics.Rect
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
@@ -36,6 +38,7 @@ class OperationsFragment : Fragment() {
 
 
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -43,9 +46,9 @@ class OperationsFragment : Fragment() {
 
         _binding = FragmentOperationsBinding.inflate(inflater, container, false)
         val root : View = binding.root
+
         val operationsViewModel = ViewModelProvider(requireActivity()).get(OperationsViewModel::class.java)
         operationsViewModel.total()
-
 
         val snackbar = Snackbar.make(binding.snackbarContainer, "Operation deleted", Snackbar.LENGTH_LONG)
         snackbar.setAction("Undo") {
@@ -72,7 +75,7 @@ class OperationsFragment : Fragment() {
 
 
         operationsViewModel.operationsList.observe(viewLifecycleOwner, Observer {
-            binding.operationsList.adapter = OperationsAdapter(it)
+            binding.operationsList.adapter = OperationsAdapter(it, findNavController(), operationsViewModel)
         })
 
         val itemTouchHelper = ItemTouchHelper(
@@ -113,6 +116,8 @@ class OperationsFragment : Fragment() {
         isExpanded = false
 
 
+
+
         val callback = requireActivity().onBackPressedDispatcher.addCallback(this) {
             if (isExpanded){
                 shrinkFab()
@@ -122,9 +127,24 @@ class OperationsFragment : Fragment() {
             }
         }
 
+        binding.overlay.setOnTouchListener { _, event ->
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                if (isExpanded) {
+                    val fabConstraintRect = Rect()
+                    binding.fabConstraint.getGlobalVisibleRect(fabConstraintRect)
+                    if (!fabConstraintRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
+                        shrinkFab()
+                    }
+                }
+            }
+            true
+        }
+
 
         return root
     }
+
+
 
     private fun setButtonsClickable(isClickable: Boolean) {
         binding.addExpense.isClickable = isClickable

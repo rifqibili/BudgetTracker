@@ -30,6 +30,7 @@ class PieAdapter(val list: List<OperationsData>) : RecyclerView.Adapter<PieAdapt
         holder.amount.text = list[position].amount
         holder.category.text = list[position].category
         holder.account.text = list[position].account
+
     }
 
 }
