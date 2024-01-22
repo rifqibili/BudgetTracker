@@ -130,7 +130,7 @@ class ExpenseBarFragment : Fragment() {
         val linearRegressionModel = LinearRegressionModel(allMonths.toDoubleArray(), expensesEveryMonts.toDoubleArray())
         val nextMonth = index + 1.0
         val predictedExpense = linearRegressionModel.predict(nextMonth)
-        if (allMonths.size > 1)
+        if (allMonths.size > 1 && predictedExpense >= 0)
             binding.prediction.text = "%.1f".format(predictedExpense)
         else
             binding.prediction.text = "Not enough data"

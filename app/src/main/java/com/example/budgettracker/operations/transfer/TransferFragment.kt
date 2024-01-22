@@ -154,9 +154,15 @@ class TransferFragment : Fragment() {
 
 
         binding.save.setOnClickListener {
-            val operation = OperationsData(0, amountValue, R.drawable.up_right_arrow_icon, choosen[1], "Transfer", pickedDate, choosen[0], choosen[1], false, 0)
-            operationsViewModel.addOperation(operation)
-            findNavController().navigate(R.id.action_transferFragment_to_operations)
+            when {
+                binding.accountTypeFrom.text.isEmpty() -> binding.accountFrom.error = "Enter account"
+                binding.accountTypeTo.text.isEmpty() -> binding.accountTo.error = "Enter account"
+                (binding.accountTypeTo.text.isNotEmpty() && binding.accountTypeFrom.text.isNotEmpty()) -> {
+                    val operation = OperationsData(0, amountValue, R.drawable.up_right_arrow_icon, choosen[1], "Transfer", pickedDate, choosen[0], choosen[1], false, 0)
+                    operationsViewModel.addOperation(operation)
+                    findNavController().navigate(R.id.action_transferFragment_to_operations)
+                }
+            }
         }
         binding.back.setOnClickListener {
             findNavController().navigate(R.id.action_transferFragment_to_operations)

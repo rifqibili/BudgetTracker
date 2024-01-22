@@ -10,10 +10,7 @@ import com.example.budgettracker.accounts.AccountsData
 import com.example.budgettracker.operations.OperationsData
 import com.example.budgettracker.operations.expense.AddData
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Date
 
 class OperationsViewModel(application: Application) : AndroidViewModel(application){
 
@@ -33,10 +30,26 @@ class OperationsViewModel(application: Application) : AndroidViewModel(applicati
     var isSavingsSelected = false
     var selectedOperationIndex = 0
     lateinit var operationForChange : OperationsData
+    lateinit var accountForChange : AccountsData
+    var analyzedCategoryIndex = 0
+    var analyzedCategoriesList = ArrayList<OperationsData>()
+    var analyzedMonthIndex = 0
+    var analyzedOperationsList = ArrayList<ArrayList<OperationsData>>()
+    var lastExpenseMonthIndex = 0
+    var lastIncomeMonthIndex = 0
 
     fun deleteAccount(account: AccountsData) {
         viewModelScope.launch(Dispatchers.IO) {
             accountsDao.deleteAccount(account)
+        }
+    }
+
+    fun changeOperationAccount(newAccountName : String, oldAccountName : String) {
+        for (element in operationsList.value!!) {
+            if (element.account == oldAccountName){
+                element.account = newAccountName
+                updateOperation(element)
+            }
         }
     }
     fun deleteAccountOperations(account : AccountsData) {
@@ -52,14 +65,14 @@ class OperationsViewModel(application: Application) : AndroidViewModel(applicati
         viewModelScope.launch(Dispatchers.IO) {
             operationsDao.deleteOperation(operation)
             operation.isForDelete = true
-            updateAccount(operation)
+            updateAccountBalance(operation)
         }
     }
 
     fun undoDelete(operation : OperationsData) {
         viewModelScope.launch(Dispatchers.IO) {
             operationsDao.insertOperation(operation)
-            updateAccount(operation)
+            updateAccountBalance(operation)
         }
     }
 
@@ -163,7 +176,8 @@ class OperationsViewModel(application: Application) : AndroidViewModel(applicati
         return sum
     }
 
-    fun updateAccount(operation: OperationsData) {
+
+    fun updateAccountBalance(operation: OperationsData) {
         viewModelScope.launch(Dispatchers.IO) {
             val accountsList = allAccounts.value.orEmpty().toMutableList()
             for (i in 0 until accountsList.size) {
@@ -200,7 +214,7 @@ class OperationsViewModel(application: Application) : AndroidViewModel(applicati
 
         viewModelScope.launch(Dispatchers.IO) {
             operationsDao.insertOperation(operation)
-            updateAccount(operation)
+            updateAccountBalance(operation)
             total()
         }
     }

@@ -133,12 +133,27 @@
         android:id="@+id/analytics"
         android:name="com.example.budgettracker.analytics.AnalyticsFragment"
         android:label="fragment_analytics"
-        tools:layout="@layout/fragment_analytics" />
+        tools:layout="@layout/fragment_analytics" >
+        <action
+            android:id="@+id/action_analytics_to_categoryAnalyticsFragment"
+            app:destination="@id/categoryAnalyticsFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popExitAnim="@anim/fade_out" />
+    </fragment>
     <fragment
         android:id="@+id/accountInformationFragment"
         android:name="com.example.budgettracker.accounts.AccountInformationFragment"
         android:label="fragment_account_information"
-        tools:layout="@layout/fragment_account_information" />
+        tools:layout="@layout/fragment_account_information" >
+        <action
+            android:id="@+id/action_accountInformationFragment_to_editAccountFragment"
+            app:destination="@id/editAccountFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right"/>
+    </fragment>
     <fragment
         android:id="@+id/incomeBarFragment"
         android:name="com.example.budgettracker.analytics.IncomeBarFragment"
@@ -179,11 +194,28 @@
     </dialog>
     <fragment
         android:id="@+id/changeOperationFragment"
-        android:name="com.example.budgettracker.operations.transfer.ChangeOperationFragment"
+        android:name="com.example.budgettracker.operations.transfer.EditOperationFragment"
         android:label="ChangeOperationFragment" />
     <fragment
         android:id="@+id/changeTransferFragment"
-        android:name="com.example.budgettracker.operations.ChangeTransferFragment"
+        android:name="com.example.budgettracker.operations.EditTransferFragment"
         android:label="fragment_change_transfer"
-        tools:layout="@layout/fragment_change_transfer" />
+        tools:layout="@layout/fragment_edit_transfer" />
+    <fragment
+        android:id="@+id/editAccountFragment"
+        android:name="com.example.budgettracker.accounts.EditAccountFragment"
+        android:label="fragment_edit_account"
+        tools:layout="@layout/fragment_edit_account" >
+        <action
+            android:id="@+id/action_editAccountFragment_to_accounts"
+            app:destination="@id/accounts"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popUpTo="@id/operations" />
+    </fragment>
+    <fragment
+        android:id="@+id/categoryAnalyticsFragment"
+        android:name="com.example.budgettracker.analytics.CategoryAnalyticsFragment"
+        android:label="fragment_category_analytics"
+        tools:layout="@layout/fragment_category_analytics" />
 </navigation>

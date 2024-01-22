@@ -2,7 +2,6 @@ package com.example.budgettracker.accounts
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -31,7 +30,8 @@ class AccountsFragment : Fragment() {
 
         val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         navBar.visibility = View.VISIBLE
-
+        operationsViewModel.lastExpenseMonthIndex = 0
+        operationsViewModel.lastIncomeMonthIndex = 0
         binding.addAccount.setOnClickListener { findNavController().navigate(R.id.action_accounts_to_addAccountFragment) }
 
         binding.accountsRV.layoutManager = LinearLayoutManager(context)

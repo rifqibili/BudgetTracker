@@ -61,11 +61,20 @@ class AccountInformationFragment : Fragment() {
                     }
                 }
             }
+            when(currentAccount.accountType) {
+                "Cash" -> binding.icon.setImageResource(R.drawable.money_icon)
+                "Card" -> binding.icon.setImageResource(R.drawable.card_icon)
+                "Bank account" -> binding.icon.setImageResource(R.drawable.bank_icon)
+            }
             binding.accountName.text = currentAccount.name
             binding.accountBalance.text = currentAccount.balance
             binding.incomeText.text = "Income\n$currentAccountIncome"
             binding.expenseText.text = "Expense\n$currentAccountExpense"
         })
+
+
+
+
 
         binding.delete.setOnClickListener {
             MaterialAlertDialogBuilder(requireContext())
@@ -83,8 +92,11 @@ class AccountInformationFragment : Fragment() {
         }
 
         binding.back.setOnClickListener {
-            //findNavController().navigate(R.id.action_accountInformationFragment_to_accounts)
             findNavController().popBackStack()
+        }
+        binding.settings.setOnClickListener {
+            operationsViewModel.accountForChange = currentAccount
+            findNavController().navigate(R.id.action_accountInformationFragment_to_editAccountFragment)
         }
 
         return root

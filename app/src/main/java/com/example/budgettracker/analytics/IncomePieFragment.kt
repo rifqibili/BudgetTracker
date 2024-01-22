@@ -7,17 +7,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.budgettracker.OperationsViewModel
 import com.example.budgettracker.R
 import com.example.budgettracker.databinding.FragmentIncomePieBinding
 import com.example.budgettracker.operations.OperationsData
-import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
-import com.github.mikephil.charting.highlight.Highlight
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.ColorTemplate.rgb
 import java.util.Calendar
 
@@ -57,9 +56,14 @@ class IncomePieFragment : Fragment() {
         )
 
         operationsViewModel.divideIncomes(operationsViewModel.operationsList.value!!)
-        val incomeDataList = operationsViewModel.divideOperationsByMonth(operationsViewModel.allIncomes)
+        var incomeDataList = operationsViewModel.divideOperationsByMonth(operationsViewModel.allIncomes)
+        operationsViewModel.operationsList.observe(viewLifecycleOwner, Observer {
+            operationsViewModel.divideIncomes(operationsViewModel.operationsList.value!!)
+            incomeDataList = operationsViewModel.divideOperationsByMonth(operationsViewModel.allIncomes)
+            operationsViewModel.analyzedOperationsList = incomeDataList
+        })
 
-        var selectedMonthIndex = 0
+        var selectedMonthIndex = operationsViewModel.lastIncomeMonthIndex
         setupPie(selectedMonthIndex, incomeDataList, customColors)
 
         if (incomeDataList.isNotEmpty()) {
@@ -68,33 +72,41 @@ class IncomePieFragment : Fragment() {
                 resultList[i].color = customColors[i % customColors.size]
             }
             resultList.sortByDescending { it.amount.toInt() }
-            binding.operationsRV.adapter = PieAdapter(resultList)
+            binding.operationsRV.adapter = PieAdapter(resultList, findNavController(), operationsViewModel)
+            operationsViewModel.analyzedCategoriesList = resultList
+            operationsViewModel.analyzedMonthIndex = selectedMonthIndex
         }
 
         binding.operationsRV.layoutManager = LinearLayoutManager(context)
         binding.monthBack.setOnClickListener {
             if (selectedMonthIndex != incomeDataList.size -1 && selectedMonthIndex != incomeDataList.size) {
                 selectedMonthIndex++
+                operationsViewModel.lastIncomeMonthIndex++
                 setupPie(selectedMonthIndex, incomeDataList, customColors)
                 val resultList = operationsViewModel.collectByCategory(incomeDataList[selectedMonthIndex])
                 for (i in 0 until resultList.size) {
                     resultList[i].color = customColors[i]
                 }
                 resultList.sortByDescending { it.amount.toInt() }
-                binding.operationsRV.adapter = PieAdapter(resultList)
+                binding.operationsRV.adapter = PieAdapter(resultList, findNavController(), operationsViewModel)
+                operationsViewModel.analyzedCategoriesList = resultList
+                operationsViewModel.analyzedMonthIndex = selectedMonthIndex
             }
         }
 
         binding.monthForward.setOnClickListener {
             if (selectedMonthIndex != 0) {
                 selectedMonthIndex--
+                operationsViewModel.lastIncomeMonthIndex--
                 setupPie(selectedMonthIndex, incomeDataList, customColors)
                 val resultList = operationsViewModel.collectByCategory(incomeDataList[selectedMonthIndex])
                 for (i in 0 until resultList.size) {
                     resultList[i].color = customColors[i]
                 }
                 resultList.sortByDescending { it.amount.toInt() }
-                binding.operationsRV.adapter = PieAdapter(resultList)
+                binding.operationsRV.adapter = PieAdapter(resultList, findNavController(), operationsViewModel)
+                operationsViewModel.analyzedCategoriesList = resultList
+                operationsViewModel.analyzedMonthIndex = selectedMonthIndex
             }
         }
 
@@ -105,6 +117,7 @@ class IncomePieFragment : Fragment() {
     private fun setupPie(selectedMonthIndex : Int, incomeDataList : ArrayList<ArrayList<OperationsData>>, customColors : IntArray) {
         val entries = ArrayList<PieEntry>()
         categoriesMap = mutableMapOf()
+        var totalForMonth = 0
 
         val calendar = Calendar.getInstance()
         if (incomeDataList.isNotEmpty()) {
@@ -118,6 +131,7 @@ class IncomePieFragment : Fragment() {
                 val amount = incomeDataList[selectedMonthIndex][i].amount.toFloat()
                 val color = customColors[i % customColors.size]
                 categoriesMap[category] = Pair(categoriesMap.getOrDefault(category, Pair(0f, color)).first + amount, color)
+                totalForMonth += amount.toInt()
             }
         }
 
@@ -143,6 +157,10 @@ class IncomePieFragment : Fragment() {
         binding.pieChart.setDrawEntryLabels(false)
         binding.pieChart.description.isEnabled = false
         binding.pieChart.legend.isEnabled = false
+        binding.pieChart.setCenterTextSize(24f)
+        if (totalForMonth != 0) {
+            binding.pieChart.centerText = totalForMonth.toString()
+        }
         binding.pieChart.animateY(1000)
         binding.pieChart.invalidate()
 

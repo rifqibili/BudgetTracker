@@ -6,11 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
+import com.example.budgettracker.OperationsViewModel
 import com.example.budgettracker.R
 import com.example.budgettracker.operations.OperationsData
 
-class PieAdapter(val list: List<OperationsData>) : RecyclerView.Adapter<PieAdapter.ViewHolder>() {
+class PieAdapter(val list: List<OperationsData>, val findNavController: NavController, val viewModel: OperationsViewModel) : RecyclerView.Adapter<PieAdapter.ViewHolder>() {
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val image : ImageView = itemView.findViewById(R.id.image)
         val amount : TextView = itemView.findViewById(R.id.balance)
@@ -30,6 +32,10 @@ class PieAdapter(val list: List<OperationsData>) : RecyclerView.Adapter<PieAdapt
         holder.amount.text = list[position].amount
         holder.category.text = list[position].category
         holder.account.text = list[position].account
+        holder.itemView.setOnClickListener {
+            findNavController.navigate(R.id.action_analytics_to_categoryAnalyticsFragment)
+            viewModel.analyzedCategoryIndex = position
+        }
 
     }
 

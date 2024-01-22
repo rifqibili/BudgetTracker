@@ -1,7 +1,6 @@
-package com.example.budgettracker.operations.transfer
+package com.example.budgettracker.operations
 
 import android.app.DatePickerDialog
-import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -13,57 +12,45 @@ import android.widget.ArrayAdapter
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
 import com.example.budgettracker.R
-import com.example.budgettracker.operations.OperationsData
 import com.example.budgettracker.OperationsViewModel
-import com.example.budgettracker.databinding.FragmentChangeOperationBinding
-import com.example.budgettracker.operations.expense.AddData
-import com.example.budgettracker.operations.expense.ExpenseAdapter
-
+import com.example.budgettracker.databinding.FragmentEditTransferBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.gson.GsonBuilder
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-import kotlin.math.abs
 
 
-class ChangeOperationFragment : Fragment() {
+class EditTransferFragment : Fragment() {
 
-    private var _binding : FragmentChangeOperationBinding? = null
+    private var _binding : FragmentEditTransferBinding? = null
     private val binding get() = _binding!!
-    private lateinit var operation : OperationsData
-    private lateinit var list: MutableList<AddData>
+    private lateinit var pickedDate: Date
     private var calendar = Calendar.getInstance()
-    private lateinit var pickedDate : Date
-    private var accountName = ""
-    private var amountValue = "0"
+    var amountValue = ""
+    var accountName = ""
+    //private lateinit var operation : OperationsData
+    var transferTo = ""
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         val operationsViewModel = ViewModelProvider(requireActivity()).get(OperationsViewModel::class.java)
-        _binding = FragmentChangeOperationBinding.inflate(inflater, container, false)
+        _binding = FragmentEditTransferBinding.inflate(inflater, container, false)
         val root : View = binding.root
 
         val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         navBar.visibility = View.GONE
 
-        binding.back.setOnClickListener{
-            findNavController().popBackStack()
-        }
-        operation = OperationsData(0, "", 0, "", operationsViewModel.operationForChange.type, calendar.time, "", "", false, 0)
         amountValue = operationsViewModel.operationForChange.amount
         accountName = operationsViewModel.operationForChange.account
         pickedDate = operationsViewModel.operationForChange.date
-        var category = operationsViewModel.operationForChange.category
+        transferTo = operationsViewModel.operationForChange.transferTo
 
         binding.amount.setText(amountValue)
-
-
         binding.amount.addTextChangedListener(
             object : TextWatcher{
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
@@ -76,54 +63,6 @@ class ChangeOperationFragment : Fragment() {
                 }
             }
         )
-        var result = context?.assets
-            ?.open("expense_categories.json")
-            ?.bufferedReader()
-            .use { it!!.readText() }
-        if (operation.type == "Income") {
-            result = context?.assets
-                ?.open("income_categories.json")
-                ?.bufferedReader()
-                .use { it!!.readText() }
-        }
-        val gson = GsonBuilder().create()
-        list = gson.fromJson(result,Array<AddData>::class.java).toMutableList()
-
-
-        binding.categorySelect.layoutManager = GridLayoutManager(context, 2, GridLayoutManager.HORIZONTAL, false)
-        if (operation.type == "Income")
-            binding.categorySelect.layoutManager = GridLayoutManager(context, 1, GridLayoutManager.HORIZONTAL, false)
-        for (element in list) {
-            if (element.categoryName == category) {
-                list.remove(element)
-                list.add(0, element)
-                break
-            }
-        }
-        binding.categorySelect.adapter = ExpenseAdapter(list, operationsViewModel)
-        binding.save.setOnClickListener {
-            if (accountName == ""){
-                binding.accountChoice.error = "Enter a valid account"
-            }
-            else{
-                operationsViewModel.expenseList.observe(viewLifecycleOwner, Observer {
-                    val icon = requireContext().resources.getIdentifier(it.last().categoryIcon, "drawable", context?.packageName)
-
-                    operation.account = accountName
-                    operation.category = it.last().categoryName
-                    operation.icon = icon
-                    operation.date = pickedDate
-                    operation.amount = amountValue
-
-                    operationsViewModel.deleteOperation(operationsViewModel.operationForChange)
-                    operationsViewModel.addOperation(operation)
-
-                    operationsViewModel.clearExpense()
-                })
-                findNavController().popBackStack()
-            }
-
-        }
 
         val dateFormat = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
         binding.dateButton.text = dateFormat.format(pickedDate)
@@ -141,23 +80,62 @@ class ChangeOperationFragment : Fragment() {
             )
             datePickerDialog.show()
         }
-
         val types = ArrayList<String>()
-
         operationsViewModel.allAccounts.observe(viewLifecycleOwner, Observer {
-            types.clear()
             for (element in it){
-                types.add(element.name)
+                if (element.name != accountName && element.name != transferTo)
+                    types.add(element.name)
             }
         })
 
 
-        val adapter = ArrayAdapter(requireContext(), R.layout.account_spinner_layout, R.id.accountName, types)
-        binding.accountType.setAdapter(adapter)
+        // choosen[0] - from, choosen[1] - to
+        val choosen = arrayOf("", "")
+        choosen[0] = accountName
+        choosen[1] = transferTo
+        binding.accountTypeFrom.setAdapter(ArrayAdapter(requireContext(), R.layout.account_spinner_layout, R.id.accountName, types))
+        binding.accountTypeFrom.setText(accountName, false)
+        binding.accountTypeTo.setAdapter(ArrayAdapter(requireContext(), R.layout.account_spinner_layout, R.id.accountName, types))
+        binding.accountTypeTo.setText(transferTo, false)
 
-        binding.accountType.setText(accountName, false)
-        binding.accountType.setOnItemClickListener { parent, view, position, id ->
-            accountName = types[position]
+
+
+        binding.accountTypeFrom.setOnItemClickListener { parent, view, position, id ->
+            types.add(choosen[0])
+            choosen[0] = types[position]
+            types.remove(choosen[0])
+
+            val newAdapter = ArrayAdapter(requireContext(), R.layout.account_spinner_layout, R.id.accountName, types)
+            binding.accountTypeFrom.setAdapter(newAdapter)
+            binding.accountTypeTo.setAdapter(newAdapter)
+        }
+
+        binding.accountTypeTo.setOnItemClickListener { parent, view, position, id ->
+            types.add(choosen[1])
+            choosen[1] = types[position]
+            types.remove(choosen[1])
+
+            val newAdapter = ArrayAdapter(requireContext(), R.layout.account_spinner_layout, R.id.accountName, types)
+            binding.accountTypeFrom.setAdapter(newAdapter)
+            binding.accountTypeTo.setAdapter(newAdapter)
+        }
+
+        binding.swap.setOnClickListener {
+            choosen.reverse()
+            binding.accountTypeFrom.setText(choosen[0], false)
+            binding.accountTypeTo.setText(choosen[1], false)
+        }
+
+
+
+        binding.save.setOnClickListener {
+            operationsViewModel.deleteOperation(operationsViewModel.operationForChange)
+            val operation = OperationsData(0, amountValue, R.drawable.up_right_arrow_icon, choosen[1], "Transfer", pickedDate, choosen[0], choosen[1], false, 0)
+            operationsViewModel.addOperation(operation)
+            findNavController().popBackStack()
+        }
+        binding.back.setOnClickListener {
+            findNavController().popBackStack()
         }
 
         binding.delete.setOnClickListener {

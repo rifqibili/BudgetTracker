@@ -36,8 +36,6 @@ class OperationsFragment : Fragment() {
     private var isExpanded = false
     private lateinit var deletedOperation : OperationsData
 
-
-
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,7 +47,8 @@ class OperationsFragment : Fragment() {
 
         val operationsViewModel = ViewModelProvider(requireActivity()).get(OperationsViewModel::class.java)
         operationsViewModel.total()
-
+        operationsViewModel.lastExpenseMonthIndex = 0
+        operationsViewModel.lastIncomeMonthIndex = 0
         val snackbar = Snackbar.make(binding.snackbarContainer, "Operation deleted", Snackbar.LENGTH_LONG)
         snackbar.setAction("Undo") {
             deletedOperation.isForDelete = false
