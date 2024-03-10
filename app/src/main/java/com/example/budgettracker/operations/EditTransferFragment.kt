@@ -33,6 +33,7 @@ class EditTransferFragment : Fragment() {
     var accountName = ""
     //private lateinit var operation : OperationsData
     var transferTo = ""
+    private var noteText = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -126,11 +127,24 @@ class EditTransferFragment : Fragment() {
             binding.accountTypeTo.setText(choosen[1], false)
         }
 
-
+        binding.note.setText(noteText)
+        binding.note.addTextChangedListener(
+            object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                override fun afterTextChanged(s: Editable?) {
+                    if (s.toString().isNotEmpty()){
+                        noteText = s.toString()
+                    }
+                    else { noteText = "" }
+                }
+            }
+        )
 
         binding.save.setOnClickListener {
             operationsViewModel.deleteOperation(operationsViewModel.operationForChange)
-            val operation = OperationsData(0, amountValue, R.drawable.up_right_arrow_icon, choosen[1], "Transfer", pickedDate, choosen[0], choosen[1], false, 0)
+            val operation = OperationsData(0, amountValue, R.drawable.up_right_arrow_icon, choosen[1], "Transfer",
+                pickedDate, choosen[0], choosen[1], false, 0, noteText)
             operationsViewModel.addOperation(operation)
             findNavController().popBackStack()
         }

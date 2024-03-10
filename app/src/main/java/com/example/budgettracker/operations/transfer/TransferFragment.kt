@@ -79,6 +79,19 @@ class TransferFragment : Fragment() {
                 }
             }
         )
+        var note = ""
+        binding.note.addTextChangedListener(
+            object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                override fun afterTextChanged(s: Editable?) {
+                    if (s.toString().isNotEmpty()){
+                        note = s.toString()
+                    }
+                    else { note = "" }
+                }
+            }
+        )
         val today = Calendar.getInstance()
         val dateFormat = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
         pickedDate = today.time
@@ -158,7 +171,8 @@ class TransferFragment : Fragment() {
                 binding.accountTypeFrom.text.isEmpty() -> binding.accountFrom.error = "Enter account"
                 binding.accountTypeTo.text.isEmpty() -> binding.accountTo.error = "Enter account"
                 (binding.accountTypeTo.text.isNotEmpty() && binding.accountTypeFrom.text.isNotEmpty()) -> {
-                    val operation = OperationsData(0, amountValue, R.drawable.up_right_arrow_icon, choosen[1], "Transfer", pickedDate, choosen[0], choosen[1], false, 0)
+                    val operation = OperationsData(0, amountValue, R.drawable.up_right_arrow_icon,
+                        choosen[1], "Transfer", pickedDate, choosen[0], choosen[1], false, 0, note)
                     operationsViewModel.addOperation(operation)
                     findNavController().navigate(R.id.action_transferFragment_to_operations)
                 }
@@ -167,7 +181,6 @@ class TransferFragment : Fragment() {
         binding.back.setOnClickListener {
             findNavController().navigate(R.id.action_transferFragment_to_operations)
         }
-
 
         return root
     }

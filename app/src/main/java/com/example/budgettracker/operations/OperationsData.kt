@@ -14,4 +14,5 @@ data class OperationsData(
     var account : String,
     val transferTo : String,
     var isForDelete : Boolean,
-    var color : Int)
+    var color : Int,
+    var note : String)

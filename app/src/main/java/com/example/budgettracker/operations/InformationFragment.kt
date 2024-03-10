@@ -67,6 +67,8 @@ class InformationFragment : BottomSheetDialogFragment() {
                 findNavController().navigate(R.id.action_informationFragment_to_changeOperationFragment)
         }
 
+        binding.note.text = selectedOperation.note
+
         return root
     }
 

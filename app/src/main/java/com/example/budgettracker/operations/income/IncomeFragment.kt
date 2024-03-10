@@ -66,6 +66,19 @@ class IncomeFragment : Fragment() {
                 }
             }
         )
+        var note = ""
+        binding.note.addTextChangedListener(
+            object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                override fun afterTextChanged(s: Editable?) {
+                    if (s.toString().isNotEmpty()){
+                        note = s.toString()
+                    }
+                    else { note = "" }
+                }
+            }
+        )
         val result = context?.assets
             ?.open("income_categories.json")
             ?.bufferedReader()
@@ -83,7 +96,7 @@ class IncomeFragment : Fragment() {
             else {
                 operationsViewModel.incomeList.observe(viewLifecycleOwner, Observer {
                     val icon = requireContext().resources.getIdentifier(it.last().categoryIcon, "drawable", context?.packageName)
-                    operation = OperationsData(0, amountValue, icon , it.last().categoryName, "Income", pickedDate, accountName, "", false, 0)
+                    operation = OperationsData(0, amountValue, icon , it.last().categoryName, "Income", pickedDate, accountName, "", false, 0, note)
                     operationsViewModel.addOperation(operation)
                     operationsViewModel.clearIncome()
 

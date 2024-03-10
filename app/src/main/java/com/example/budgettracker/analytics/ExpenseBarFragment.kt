@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.example.budgettracker.LinearRegressionModel
 import com.example.budgettracker.OperationsViewModel
 import com.example.budgettracker.R
@@ -87,7 +88,8 @@ class ExpenseBarFragment : Fragment() {
                 val selectedXAxisCount = x.substringBefore(".") //this value is float so use substringbefore method
                 // another method shown below
                 val nonFloat = binding.barChart.xAxis.valueFormatter.getFormattedValue(e.x)
-                binding.yearText.text = selectedXAxisCount
+                //binding.yearText.text = selectedXAxisCount
+                findNavController().navigate(R.id.action_analytics_to_monthAnalyticsFragment)
             }
 
             override fun onNothingSelected() { }
@@ -154,7 +156,7 @@ class ExpenseBarFragment : Fragment() {
 
         binding.barChart.animateY(1000)
 
-        binding.barChart.xAxis.gridColor = MaterialColors.getColor(requireContext(), com.google.android.material.R.attr.colorOnPrimary, Color.BLACK)
+        binding.barChart.xAxis.gridColor = Color.WHITE
         binding.barChart.axisLeft.isEnabled = false
         binding.barChart.axisLeft.axisMinimum = 0f
         binding.barChart.axisRight.isEnabled = false

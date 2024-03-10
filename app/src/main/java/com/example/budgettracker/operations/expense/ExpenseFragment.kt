@@ -20,6 +20,7 @@ import com.example.budgettracker.operations.OperationsData
 import com.example.budgettracker.OperationsViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.gson.GsonBuilder
+import org.w3c.dom.Text
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -66,6 +67,19 @@ class ExpenseFragment : Fragment() {
                 }
             }
         )
+        var note = ""
+        binding.note.addTextChangedListener(
+            object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                override fun afterTextChanged(s: Editable?) {
+                    if (s.toString().isNotEmpty()){
+                        note = s.toString()
+                    }
+                    else { note = "" }
+                }
+            }
+        )
         val result = context?.assets
             ?.open("expense_categories.json")
             ?.bufferedReader()
@@ -83,7 +97,7 @@ class ExpenseFragment : Fragment() {
             else{
                 operationsViewModel.expenseList.observe(viewLifecycleOwner, Observer {
                     val icon = requireContext().resources.getIdentifier(it.last().categoryIcon, "drawable", context?.packageName)
-                    operation = OperationsData(0, amountValue, icon , it.last().categoryName, "Expense", pickedDate, accountName, "", false, 0)
+                    operation = OperationsData(0, amountValue, icon , it.last().categoryName, "Expense", pickedDate, accountName, "", false, 0, note)
                     operationsViewModel.addOperation(operation)
                     operationsViewModel.clearExpense()
                 })

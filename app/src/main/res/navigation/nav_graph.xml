@@ -140,6 +140,9 @@
             app:enterAnim="@anim/fade_in"
             app:exitAnim="@anim/fade_out"
             app:popExitAnim="@anim/fade_out" />
+        <action
+            android:id="@+id/action_analytics_to_monthAnalyticsFragment"
+            app:destination="@id/monthAnalyticsFragment" />
     </fragment>
     <fragment
         android:id="@+id/accountInformationFragment"
@@ -218,4 +221,8 @@
         android:name="com.example.budgettracker.analytics.CategoryAnalyticsFragment"
         android:label="fragment_category_analytics"
         tools:layout="@layout/fragment_category_analytics" />
+    <fragment
+        android:id="@+id/monthAnalyticsFragment"
+        android:name="com.example.budgettracker.analytics.MonthAnalyticsFragment"
+        android:label="MonthAnalyticsFragment" />
 </navigation>

@@ -126,7 +126,8 @@ class OperationsViewModel(application: Application) : AndroidViewModel(applicati
                     }
                 }
                 blackList.add(list[i].category)
-                result.add(OperationsData(0, totalAmount.toString(), list[i].icon, list[i].category, "Transfer", list[i].date , "Operations: $operationsCount", "", false, list[i].color))
+                result.add(OperationsData(0, totalAmount.toString(), list[i].icon, list[i].category,
+                    "Transfer", list[i].date , "Operations: $operationsCount", "", false, list[i].color, list[i].note))
             }
         }
         return result
@@ -204,14 +205,12 @@ class OperationsViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     fun addAccount(account : AccountsData){
-
         viewModelScope.launch(Dispatchers.IO) {
             accountsDao.insertAccount(account)
         }
     }
 
     fun addOperation(operation : OperationsData){
-
         viewModelScope.launch(Dispatchers.IO) {
             operationsDao.insertOperation(operation)
             updateAccountBalance(operation)

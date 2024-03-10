@@ -139,7 +139,7 @@ class IncomeBarFragment : Fragment() {
 
         //binding.barChart.animateY(1000)
 
-        binding.barChart.xAxis.gridColor = MaterialColors.getColor(requireContext(), com.google.android.material.R.attr.colorOnPrimary, Color.BLACK)
+        binding.barChart.xAxis.gridColor = Color.WHITE
         binding.barChart.axisLeft.isEnabled = false
         binding.barChart.axisRight.isEnabled = false
         binding.barChart.xAxis.valueFormatter = IndexAxisValueFormatter(labels)

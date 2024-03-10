@@ -39,6 +39,7 @@ class EditOperationFragment : Fragment() {
     private lateinit var pickedDate : Date
     private var accountName = ""
     private var amountValue = "0"
+    private var noteText = ""
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -53,15 +54,15 @@ class EditOperationFragment : Fragment() {
         binding.back.setOnClickListener{
             findNavController().popBackStack()
         }
-        operation = OperationsData(0, "", 0, "", operationsViewModel.operationForChange.type, calendar.time, "", "", false, 0)
+        operation = OperationsData(0, "", 0, "",
+            operationsViewModel.operationForChange.type, calendar.time, "", "", false, 0, "")
         amountValue = operationsViewModel.operationForChange.amount
         accountName = operationsViewModel.operationForChange.account
         pickedDate = operationsViewModel.operationForChange.date
         var category = operationsViewModel.operationForChange.category
+        noteText = operationsViewModel.operationForChange.note
 
         binding.amount.setText(amountValue)
-
-
         binding.amount.addTextChangedListener(
             object : TextWatcher{
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
@@ -71,6 +72,19 @@ class EditOperationFragment : Fragment() {
                         amountValue = s.toString()
                     }
                     else { amountValue = "0" }
+                }
+            }
+        )
+        binding.note.setText(noteText)
+        binding.note.addTextChangedListener(
+            object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                override fun afterTextChanged(s: Editable?) {
+                    if (s.toString().isNotEmpty()){
+                        noteText = s.toString()
+                    }
+                    else { noteText = "" }
                 }
             }
         )
@@ -112,6 +126,7 @@ class EditOperationFragment : Fragment() {
                     operation.icon = icon
                     operation.date = pickedDate
                     operation.amount = amountValue
+                    operation.note = noteText
 
                     operationsViewModel.deleteOperation(operationsViewModel.operationForChange)
                     operationsViewModel.addOperation(operation)
