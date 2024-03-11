@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import com.example.budgettracker.LinearRegressionModel
 import com.example.budgettracker.OperationsViewModel
 import com.example.budgettracker.R
 import com.example.budgettracker.databinding.FragmentIncomeBarBinding
@@ -21,7 +23,6 @@ import com.github.mikephil.charting.formatter.LargeValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.ColorTemplate
-import com.google.android.material.color.MaterialColors
 import java.util.Calendar
 
 class IncomeBarFragment : Fragment() {
@@ -33,6 +34,8 @@ class IncomeBarFragment : Fragment() {
     val existingYears = ArrayList<Int>()
     lateinit var labels : Array<String>
     var selectedYear = -1
+    val incomeEveryMonth = arrayListOf<Double>()
+    val allMonths = arrayListOf<Double>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -80,11 +83,14 @@ class IncomeBarFragment : Fragment() {
         binding.barChart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
             override fun onValueSelected(e: Entry, h: Highlight?) {
                 val x = e.x.toString()
-                val y = e.y
                 val selectedXAxisCount = x.substringBefore(".") //this value is float so use substringbefore method
                 // another method shown below
                 val nonFloat = binding.barChart.xAxis.valueFormatter.getFormattedValue(e.x)
-                binding.yearText.text = selectedXAxisCount
+                //binding.yearText.text = selectedXAxisCount
+                operationsViewModel.analyzedMonthIndex = selectedXAxisCount.toInt()
+                operationsViewModel.selectedYear = selectedYear
+                operationsViewModel.typeOfAnalyzedOperation = "Income"
+                findNavController().navigate(R.id.action_analytics_to_monthAnalyticsFragment)
             }
 
             override fun onNothingSelected() { }
@@ -96,20 +102,25 @@ class IncomeBarFragment : Fragment() {
         return root
     }
 
-    private fun setupBar(selectedYear : Int, expenseDataList : ArrayList<ArrayList<OperationsData>>, customColors : IntArray) {
+    private fun setupBar(selectedYear : Int, incomeDataList : ArrayList<ArrayList<OperationsData>>, customColors : IntArray) {
         val entries = ArrayList<BarEntry>()
         incomeMap = mutableMapOf()
 
-
-        if (expenseDataList.isNotEmpty()) {
-            for (i in 0 until expenseDataList.size) {
-                calendar.time = expenseDataList[i][0].date
+        var index = 0.0
+        incomeEveryMonth.clear()
+        allMonths.clear()
+        if (incomeDataList.isNotEmpty()) {
+            for (i in 0 until incomeDataList.size) {
+                calendar.time = incomeDataList[i][0].date
                 val month = calendar.get(Calendar.MONTH).toFloat()
                 val year = calendar.get(Calendar.YEAR)
                 existingYears.add(year)
+                incomeEveryMonth.add(incomeDataList[i].sumOf { it.amount.toDouble() })
+                index += 1.0
+                allMonths.add(index)
                 if (year == selectedYear) {
-                    for (j in 0 until expenseDataList[i].size) {
-                        val amount = expenseDataList[i][j].amount.toInt()
+                    for (j in 0 until incomeDataList[i].size) {
+                        val amount = incomeDataList[i][j].amount.toInt()
                         incomeMap[month] = incomeMap.getOrDefault(month, 0f) + amount
                     }
                 }
@@ -119,6 +130,15 @@ class IncomeBarFragment : Fragment() {
         else {
 
         }
+        allMonths.reverse()
+        val linearRegressionModel = LinearRegressionModel(allMonths.toDoubleArray(), incomeEveryMonth.toDoubleArray())
+        val nextMonth = index + 1.0
+        val predictedExpense = linearRegressionModel.predict(nextMonth)
+        if (allMonths.size > 1 && predictedExpense >= 0)
+            binding.prediction.text = "%.1f".format(predictedExpense)
+        else
+            binding.prediction.text = "Not enough data"
+
 
         incomeMap.forEach { (month, value) ->
             entries.add(BarEntry(month, value))
@@ -137,8 +157,8 @@ class IncomeBarFragment : Fragment() {
         binding.barChart.description.isEnabled = false
         binding.barChart.legend.isEnabled = false
 
-        //binding.barChart.animateY(1000)
-
+        binding.barChart.animateY(1000)
+        binding.barChart.axisLeft.axisMinimum = 0f
         binding.barChart.xAxis.gridColor = Color.WHITE
         binding.barChart.axisLeft.isEnabled = false
         binding.barChart.axisRight.isEnabled = false

@@ -44,14 +44,16 @@ class CategoryAnalyticsFragment : Fragment() {
         val categoryOperations = ArrayList<OperationsData>()
         operationsViewModel.operationsList.observe(viewLifecycleOwner, Observer {
             categoryOperations.clear()
-            for (element in operationsViewModel.analyzedOperationsList[operationsViewModel.analyzedMonthIndex]) {
-                if (element.category == analyzedCategory.category) {
-                    categoryOperations.add(element)
+            if (operationsViewModel.analyzedOperationsList.size != 0){
+                for (element in operationsViewModel.analyzedOperationsList[operationsViewModel.analyzedMonthIndex]) {
+                    if (element.category == analyzedCategory.category) {
+                        categoryOperations.add(element)
+                    }
                 }
+                calendar.time = categoryOperations[0].date
             }
 
 
-            calendar.time = categoryOperations[0].date
             val month = calendar.get(Calendar.MONTH)
             binding.monthText.text = "Total for ${months[month]}"
             var totalAmount = categoryOperations.sumOf { it.amount.toInt() }

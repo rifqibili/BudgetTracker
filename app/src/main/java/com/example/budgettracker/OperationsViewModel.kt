@@ -37,6 +37,8 @@ class OperationsViewModel(application: Application) : AndroidViewModel(applicati
     var analyzedOperationsList = ArrayList<ArrayList<OperationsData>>()
     var lastExpenseMonthIndex = 0
     var lastIncomeMonthIndex = 0
+    var selectedYear = 0 // to divide same months from different years in analyze when touches bar diagram
+    var typeOfAnalyzedOperation = "" // Expense or Income for analyze when touches bar on bar diagram
 
     fun deleteAccount(account: AccountsData) {
         viewModelScope.launch(Dispatchers.IO) {

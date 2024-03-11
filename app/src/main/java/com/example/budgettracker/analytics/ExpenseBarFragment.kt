@@ -26,9 +26,7 @@ import com.github.mikephil.charting.utils.ColorTemplate.rgb
 import com.google.android.material.color.MaterialColors
 import java.util.Calendar
 
-
 class ExpenseBarFragment : Fragment() {
-
     private var _binding : FragmentExpenseBarBinding? = null
     private val binding get() = _binding!!
     private lateinit var months : Array<String>
@@ -51,6 +49,7 @@ class ExpenseBarFragment : Fragment() {
         val customColors = intArrayOf(
             rgb("#00BCD4") // blue
         )
+
         months = resources.getStringArray(R.array.shortMonths)
         labels = months
         operationsViewModel.divideExpenses(operationsViewModel.operationsList.value!!)
@@ -84,11 +83,13 @@ class ExpenseBarFragment : Fragment() {
         binding.barChart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener{
             override fun onValueSelected(e: Entry, h: Highlight?) {
                 val x = e.x.toString()
-                val y = e.y
                 val selectedXAxisCount = x.substringBefore(".") //this value is float so use substringbefore method
                 // another method shown below
                 val nonFloat = binding.barChart.xAxis.valueFormatter.getFormattedValue(e.x)
                 //binding.yearText.text = selectedXAxisCount
+                operationsViewModel.analyzedMonthIndex = selectedXAxisCount.toInt()
+                operationsViewModel.selectedYear = selectedYear
+                operationsViewModel.typeOfAnalyzedOperation = "Expense"
                 findNavController().navigate(R.id.action_analytics_to_monthAnalyticsFragment)
             }
 
