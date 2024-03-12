@@ -17,10 +17,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.budgettracker.R
 import com.example.budgettracker.databinding.FragmentAddExpenseBinding
 import com.example.budgettracker.operations.OperationsData
-import com.example.budgettracker.OperationsViewModel
+import com.example.budgettracker.ViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.gson.GsonBuilder
-import org.w3c.dom.Text
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -41,7 +40,7 @@ class ExpenseFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val operationsViewModel = ViewModelProvider(requireActivity()).get(OperationsViewModel::class.java)
+        val viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
         _binding = FragmentAddExpenseBinding.inflate(inflater, container, false)
         val root : View = binding.root
 
@@ -89,17 +88,17 @@ class ExpenseFragment : Fragment() {
 
 
         binding.categorySelect.layoutManager = GridLayoutManager(context, 2, GridLayoutManager.HORIZONTAL, false)
-        binding.categorySelect.adapter = ExpenseAdapter(list, operationsViewModel)
+        binding.categorySelect.adapter = ExpenseAdapter(list, viewModel)
         binding.save.setOnClickListener {
             if (accountName == ""){
                 binding.accountChoice.error = "Enter a valid account"
             }
             else{
-                operationsViewModel.expenseList.observe(viewLifecycleOwner, Observer {
+                viewModel.expenseList.observe(viewLifecycleOwner, Observer {
                     val icon = requireContext().resources.getIdentifier(it.last().categoryIcon, "drawable", context?.packageName)
                     operation = OperationsData(0, amountValue, icon , it.last().categoryName, "Expense", pickedDate, accountName, "", false, 0, note)
-                    operationsViewModel.addOperation(operation)
-                    operationsViewModel.clearExpense()
+                    viewModel.addOperation(operation)
+                    viewModel.clearExpense()
                 })
                 findNavController().navigate(R.id.action_addExpenseFragment_to_operations)
             }
@@ -141,7 +140,7 @@ class ExpenseFragment : Fragment() {
             datePickerDialog.show()
         }
         val types = ArrayList<String>()
-        operationsViewModel.allAccounts.observe(viewLifecycleOwner, Observer {
+        viewModel.allAccounts.observe(viewLifecycleOwner, Observer {
             types.clear()
             for (element in it){
                 types.add(element.name)

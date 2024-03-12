@@ -9,9 +9,9 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.budgettracker.LinearRegressionModel
-import com.example.budgettracker.OperationsViewModel
+import com.example.budgettracker.ViewModel
 import com.example.budgettracker.R
-import com.example.budgettracker.databinding.FragmentIncomeBarBinding
+import com.example.budgettracker.databinding.FragmentBarBinding
 import com.example.budgettracker.operations.OperationsData
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
@@ -26,7 +26,7 @@ import com.github.mikephil.charting.utils.ColorTemplate
 import java.util.Calendar
 
 class IncomeBarFragment : Fragment() {
-    private var _binding : FragmentIncomeBarBinding? = null
+    private var _binding : FragmentBarBinding? = null
     private val binding get() = _binding!!
     private lateinit var months : Array<String>
     var incomeMap = mutableMapOf<Float, Float>()
@@ -41,8 +41,8 @@ class IncomeBarFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val operationsViewModel = ViewModelProvider(requireActivity()).get(OperationsViewModel::class.java)
-        _binding = FragmentIncomeBarBinding.inflate(inflater, container, false)
+        val viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
+        _binding = FragmentBarBinding.inflate(inflater, container, false)
         val root : View = binding.root
 
         val customColors = intArrayOf(
@@ -50,9 +50,9 @@ class IncomeBarFragment : Fragment() {
         )
         months = resources.getStringArray(R.array.shortMonths)
         labels = months
-        operationsViewModel.divideIncomes(operationsViewModel.operationsList.value!!)
+        viewModel.divideIncomes(viewModel.operationsList.value!!)
 
-        val incomeDataList = operationsViewModel.divideOperationsByMonth(operationsViewModel.allIncomes)
+        val incomeDataList = viewModel.divideOperationsByMonth(viewModel.allIncomes)
         //var selectedYear = calendar.get(Calendar.YEAR)
         if (incomeDataList.isNotEmpty()) {
             calendar.time = incomeDataList[0][0].date
@@ -87,9 +87,9 @@ class IncomeBarFragment : Fragment() {
                 // another method shown below
                 val nonFloat = binding.barChart.xAxis.valueFormatter.getFormattedValue(e.x)
                 //binding.yearText.text = selectedXAxisCount
-                operationsViewModel.analyzedMonthIndex = selectedXAxisCount.toInt()
-                operationsViewModel.selectedYear = selectedYear
-                operationsViewModel.typeOfAnalyzedOperation = "Income"
+                viewModel.analyzedMonthIndexForBar = selectedXAxisCount.toInt()
+                viewModel.selectedYear = selectedYear
+                //viewModel.typeOfAnalyzedOperation.value = 3
                 findNavController().navigate(R.id.action_analytics_to_monthAnalyticsFragment)
             }
 

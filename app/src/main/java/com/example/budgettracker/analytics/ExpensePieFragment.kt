@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.budgettracker.OperationsViewModel
+import com.example.budgettracker.ViewModel
 import com.example.budgettracker.R
 import com.example.budgettracker.databinding.FragmentExpensePieBinding
 import com.example.budgettracker.operations.OperationsData
@@ -31,7 +31,7 @@ class ExpensePieFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val operationsViewModel = ViewModelProvider(requireActivity()).get(OperationsViewModel::class.java)
+        val viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
         _binding = FragmentExpensePieBinding.inflate(inflater, container, false)
         val root : View = binding.root
 
@@ -54,25 +54,27 @@ class ExpensePieFragment : Fragment() {
             rgb("#FFEB3B") // yellow
         )
 
-        operationsViewModel.divideExpenses(operationsViewModel.operationsList.value!!)
-        var expenseDataList = operationsViewModel.divideOperationsByMonth(operationsViewModel.allExpenses)
-        operationsViewModel.operationsList.observe(viewLifecycleOwner, Observer {
-            operationsViewModel.divideExpenses(operationsViewModel.operationsList.value!!)
-            expenseDataList = operationsViewModel.divideOperationsByMonth(operationsViewModel.allExpenses)
-            operationsViewModel.analyzedOperationsList = expenseDataList
+        viewModel.divideExpenses(viewModel.operationsList.value!!)
+        var expenseDataList = viewModel.divideOperationsByMonth(viewModel.allExpenses)
+        viewModel.operationsList.observe(viewLifecycleOwner, Observer {
+            viewModel.divideExpenses(viewModel.operationsList.value!!)
+            expenseDataList = viewModel.divideOperationsByMonth(viewModel.allExpenses)
+            viewModel.analyzedOperationsListExpense = expenseDataList
         })
 
-        var selectedMonthIndex = operationsViewModel.lastExpenseMonthIndex
+        var selectedMonthIndex = viewModel.lastExpenseMonthIndex
         setupPie(selectedMonthIndex, expenseDataList, customColors)
+
+
         if (expenseDataList.isNotEmpty()){
-            val resultList = operationsViewModel.collectByCategory(expenseDataList[selectedMonthIndex])
+            val resultList = viewModel.collectByCategory(expenseDataList[selectedMonthIndex])
             for (i in 0 until resultList.size) {
                 resultList[i].color = customColors[i % customColors.size]
             }
             resultList.sortByDescending { it.amount.toInt() }
-            binding.operationsRV.adapter = PieAdapter(resultList, findNavController(), operationsViewModel)
-            operationsViewModel.analyzedCategoriesList = resultList
-            operationsViewModel.analyzedMonthIndex = selectedMonthIndex
+            binding.operationsRV.adapter = PieAdapter(resultList, findNavController(), viewModel)
+            viewModel.analyzedCategoriesListExpense = resultList
+            viewModel.analyzedMonthIndexExpense = selectedMonthIndex
         }
 
 
@@ -82,32 +84,32 @@ class ExpensePieFragment : Fragment() {
         binding.monthBack.setOnClickListener {
             if (selectedMonthIndex != expenseDataList.size -1 && selectedMonthIndex != expenseDataList.size) {
                 selectedMonthIndex++
-                operationsViewModel.lastExpenseMonthIndex++
+                viewModel.lastExpenseMonthIndex++
                 setupPie(selectedMonthIndex, expenseDataList, customColors)
-                val resultList = operationsViewModel.collectByCategory(expenseDataList[selectedMonthIndex])
+                val resultList = viewModel.collectByCategory(expenseDataList[selectedMonthIndex])
                 for (i in 0 until resultList.size) {
                     resultList[i].color = customColors[i]
                 }
                 resultList.sortByDescending { it.amount.toInt() }
-                binding.operationsRV.adapter = PieAdapter(resultList, findNavController(), operationsViewModel)
-                operationsViewModel.analyzedCategoriesList = resultList
-                operationsViewModel.analyzedMonthIndex = selectedMonthIndex
+                binding.operationsRV.adapter = PieAdapter(resultList, findNavController(), viewModel)
+                viewModel.analyzedCategoriesListExpense = resultList
+                viewModel.analyzedMonthIndexExpense = selectedMonthIndex
             }
         }
 
         binding.monthForward.setOnClickListener {
             if (selectedMonthIndex != 0) {
                 selectedMonthIndex--
-                operationsViewModel.lastExpenseMonthIndex--
+                viewModel.lastExpenseMonthIndex--
                 setupPie(selectedMonthIndex, expenseDataList, customColors)
-                val resultList = operationsViewModel.collectByCategory(expenseDataList[selectedMonthIndex])
+                val resultList = viewModel.collectByCategory(expenseDataList[selectedMonthIndex])
                 for (i in 0 until resultList.size) {
                     resultList[i].color = customColors[i]
                 }
                 resultList.sortByDescending { it.amount.toInt() }
-                binding.operationsRV.adapter = PieAdapter(resultList, findNavController(), operationsViewModel)
-                operationsViewModel.analyzedCategoriesList = resultList
-                operationsViewModel.analyzedMonthIndex = selectedMonthIndex
+                binding.operationsRV.adapter = PieAdapter(resultList, findNavController(), viewModel)
+                viewModel.analyzedCategoriesListExpense = resultList
+                viewModel.analyzedMonthIndexExpense = selectedMonthIndex
             }
         }
 

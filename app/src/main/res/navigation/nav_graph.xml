@@ -169,7 +169,7 @@
         android:id="@+id/expenseBarFragment"
         android:name="com.example.budgettracker.analytics.ExpenseBarFragment"
         android:label="fragment_expense_bar"
-        tools:layout="@layout/fragment_expense_bar" />
+        tools:layout="@layout/fragment_bar" />
     <fragment
         android:id="@+id/expensePieFragment"
         android:name="com.example.budgettracker.analytics.ExpensePieFragment"

@@ -2,6 +2,7 @@ package com.example.budgettracker.analytics
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,13 +10,15 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.budgettracker.OperationsViewModel
+import com.example.budgettracker.ViewModel
 import com.example.budgettracker.R
 import com.example.budgettracker.databinding.FragmentCategoryAnalyticsBinding
 import com.example.budgettracker.operations.OperationsAdapter
 import com.example.budgettracker.operations.OperationsData
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import java.time.LocalDate
 import java.util.Calendar
+import java.util.Date
 
 
 class CategoryAnalyticsFragment : Fragment() {
@@ -28,7 +31,7 @@ class CategoryAnalyticsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val operationsViewModel = ViewModelProvider(requireActivity()).get(OperationsViewModel::class.java)
+        val viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
         _binding = FragmentCategoryAnalyticsBinding.inflate(inflater, container, false)
         val root : View = binding.root
 
@@ -37,28 +40,67 @@ class CategoryAnalyticsFragment : Fragment() {
 
         val months = resources.getStringArray(R.array.months)
 
-        val analyzedCategory = operationsViewModel.analyzedCategoriesList[operationsViewModel.analyzedCategoryIndex]
+
+        var analyzedCategory = OperationsData(0, "", 1, "", "", Calendar.getInstance().time, "", "", false, 1, "")
+        when (viewModel.typeOfAnalyzedOperation) {
+            0 -> {analyzedCategory = viewModel.analyzedCategoriesListExpense[viewModel.analyzedCategoryIndexExpense]}
+            1 -> {analyzedCategory = viewModel.analyzedCategoriesListIncome[viewModel.analyzedCategoryIndexIncome]}
+        }
+
 
         binding.categoryName.text = analyzedCategory.category
         binding.categoryOperationsRV.layoutManager = LinearLayoutManager(context)
         val categoryOperations = ArrayList<OperationsData>()
-        operationsViewModel.operationsList.observe(viewLifecycleOwner, Observer {
+
+
+        viewModel.operationsList.observe(viewLifecycleOwner, Observer {
+            if (viewModel.analyzedMonthIndexExpense >= viewModel.analyzedOperationsListExpense.size) {
+                viewModel.analyzedMonthIndexExpense--
+                viewModel.lastExpenseMonthIndex--
+            }
+            if (viewModel.analyzedMonthIndexIncome >= viewModel.analyzedOperationsListIncome.size) {
+                viewModel.analyzedMonthIndexIncome--
+                viewModel.lastIncomeMonthIndex--
+            }
             categoryOperations.clear()
-            if (operationsViewModel.analyzedOperationsList.size != 0){
-                for (element in operationsViewModel.analyzedOperationsList[operationsViewModel.analyzedMonthIndex]) {
-                    if (element.category == analyzedCategory.category) {
-                        categoryOperations.add(element)
+            var totalAmount = 0
+            when (viewModel.typeOfAnalyzedOperation) {
+                0 -> {
+                    if (viewModel.analyzedOperationsListExpense.size != 0) {
+                        for (element in viewModel.analyzedOperationsListExpense[viewModel.analyzedMonthIndexExpense]) {
+                            if (element.category == analyzedCategory.category) {
+                                categoryOperations.add(element)
+                                calendar.time = categoryOperations[0].date
+                            }
+                        }
+                        totalAmount = categoryOperations.sumOf { it.amount.toInt() }
+
+
+                    }
+
+                }
+                1 -> {
+                    if (viewModel.analyzedOperationsListIncome.size != 0) {
+                        for (element in viewModel.analyzedOperationsListIncome[viewModel.analyzedMonthIndexIncome]) {
+                            if (element.category == analyzedCategory.category) {
+                                categoryOperations.add(element)
+                                calendar.time = categoryOperations[0].date
+                            }
+                        }
+
+                        totalAmount = categoryOperations.sumOf { it.amount.toInt() }
+
                     }
                 }
-                calendar.time = categoryOperations[0].date
             }
+
 
 
             val month = calendar.get(Calendar.MONTH)
             binding.monthText.text = "Total for ${months[month]}"
-            var totalAmount = categoryOperations.sumOf { it.amount.toInt() }
+
             binding.monthTotal.text = totalAmount.toString()
-            binding.categoryOperationsRV.adapter = OperationsAdapter(categoryOperations, findNavController(), operationsViewModel)
+            binding.categoryOperationsRV.adapter = OperationsAdapter(categoryOperations, findNavController(), viewModel)
         })
 
 

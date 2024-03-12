@@ -7,10 +7,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
-import com.example.budgettracker.OperationsViewModel
+import com.example.budgettracker.ViewModel
 import com.example.budgettracker.R
 
-class AccountsAdapter(val list: List<AccountsData>, val findNavController: NavController, val viewModel: OperationsViewModel) : RecyclerView.Adapter<AccountsAdapter.ViewHolder>() {
+class AccountsAdapter(val list: List<AccountsData>, val findNavController: NavController, val viewModel: ViewModel) : RecyclerView.Adapter<AccountsAdapter.ViewHolder>() {
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val balance : TextView = itemView.findViewById(R.id.balance)
         val account : TextView = itemView.findViewById(R.id.accountItem)

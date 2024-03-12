@@ -8,15 +8,14 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
-import com.example.budgettracker.OperationsViewModel
+import com.example.budgettracker.ViewModel
 import com.example.budgettracker.R
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-import kotlin.time.Duration.Companion.microseconds
 
-class OperationsAdapter(val list: List<OperationsData>, val findNavController: NavController, val viewModel: OperationsViewModel) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class OperationsAdapter(val list: List<OperationsData>, val findNavController: NavController, val viewModel: ViewModel) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemViewType(position: Int): Int {
         if (position == 0){
             return 0

@@ -15,7 +15,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.budgettracker.R
 import com.example.budgettracker.operations.OperationsData
-import com.example.budgettracker.OperationsViewModel
+import com.example.budgettracker.ViewModel
 import com.example.budgettracker.databinding.FragmentEditOperationBinding
 import com.example.budgettracker.operations.expense.AddData
 import com.example.budgettracker.operations.expense.ExpenseAdapter
@@ -44,7 +44,7 @@ class EditOperationFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val operationsViewModel = ViewModelProvider(requireActivity()).get(OperationsViewModel::class.java)
+        val viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
         _binding = FragmentEditOperationBinding.inflate(inflater, container, false)
         val root : View = binding.root
 
@@ -55,12 +55,12 @@ class EditOperationFragment : Fragment() {
             findNavController().popBackStack()
         }
         operation = OperationsData(0, "", 0, "",
-            operationsViewModel.operationForChange.type, calendar.time, "", "", false, 0, "")
-        amountValue = operationsViewModel.operationForChange.amount
-        accountName = operationsViewModel.operationForChange.account
-        pickedDate = operationsViewModel.operationForChange.date
-        var category = operationsViewModel.operationForChange.category
-        noteText = operationsViewModel.operationForChange.note
+            viewModel.operationForChange.type, calendar.time, "", "", false, 0, "")
+        amountValue = viewModel.operationForChange.amount
+        accountName = viewModel.operationForChange.account
+        pickedDate = viewModel.operationForChange.date
+        var category = viewModel.operationForChange.category
+        noteText = viewModel.operationForChange.note
 
         binding.amount.setText(amountValue)
         binding.amount.addTextChangedListener(
@@ -112,13 +112,13 @@ class EditOperationFragment : Fragment() {
                 break
             }
         }
-        binding.categorySelect.adapter = ExpenseAdapter(list, operationsViewModel)
+        binding.categorySelect.adapter = ExpenseAdapter(list, viewModel)
         binding.save.setOnClickListener {
             if (accountName == ""){
                 binding.accountChoice.error = "Enter a valid account"
             }
             else{
-                operationsViewModel.expenseList.observe(viewLifecycleOwner, Observer {
+                viewModel.expenseList.observe(viewLifecycleOwner, Observer {
                     val icon = requireContext().resources.getIdentifier(it.last().categoryIcon, "drawable", context?.packageName)
 
                     operation.account = accountName
@@ -128,10 +128,10 @@ class EditOperationFragment : Fragment() {
                     operation.amount = amountValue
                     operation.note = noteText
 
-                    operationsViewModel.deleteOperation(operationsViewModel.operationForChange)
-                    operationsViewModel.addOperation(operation)
+                    viewModel.deleteOperation(viewModel.operationForChange)
+                    viewModel.addOperation(operation)
 
-                    operationsViewModel.clearExpense()
+                    viewModel.clearExpense()
                 })
                 findNavController().popBackStack()
             }
@@ -157,7 +157,7 @@ class EditOperationFragment : Fragment() {
 
         val types = ArrayList<String>()
 
-        operationsViewModel.allAccounts.observe(viewLifecycleOwner, Observer {
+        viewModel.allAccounts.observe(viewLifecycleOwner, Observer {
             types.clear()
             for (element in it){
                 types.add(element.name)
@@ -177,7 +177,7 @@ class EditOperationFragment : Fragment() {
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Delete an operation?")
                 .setPositiveButton("YES") { dialog, which ->
-                    operationsViewModel.deleteOperation(operationsViewModel.operationForChange)
+                    viewModel.deleteOperation(viewModel.operationForChange)
                     findNavController().popBackStack()
                 }
                 .setNegativeButton("NO") {dialog, which ->

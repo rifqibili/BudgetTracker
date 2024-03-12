@@ -11,7 +11,7 @@ import android.widget.ArrayAdapter
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.budgettracker.R
-import com.example.budgettracker.OperationsViewModel
+import com.example.budgettracker.ViewModel
 import com.example.budgettracker.databinding.FragmentEditAccountBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -26,20 +26,20 @@ class EditAccountFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val operationsViewModel = ViewModelProvider(requireActivity()).get(OperationsViewModel::class.java)
+        val viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
         _binding = FragmentEditAccountBinding.inflate(inflater, container, false)
         val root : View = binding.root
 
         val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         navBar.visibility = View.GONE
 
-        var name = operationsViewModel.accountForChange.name
-        var balance = operationsViewModel.accountForChange.balance
-        var accountType = operationsViewModel.accountForChange.accountType
+        var name = viewModel.accountForChange.name
+        var balance = viewModel.accountForChange.balance
+        var accountType = viewModel.accountForChange.accountType
         binding.accountType.setText(accountType, false)
         binding.name.setText(name)
         binding.currentBalance.setText(balance)
-        binding.savings.isChecked = operationsViewModel.accountForChange.isSavings
+        binding.savings.isChecked = viewModel.accountForChange.isSavings
         binding.name.addTextChangedListener(
             object : TextWatcher{
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
@@ -79,8 +79,8 @@ class EditAccountFragment : Fragment() {
 
         binding.save.setOnClickListener {
             var flag = true
-            for (element in operationsViewModel.allAccounts.value!!) {
-                if (element.name == name && name != operationsViewModel.accountForChange.name) {
+            for (element in viewModel.allAccounts.value!!) {
+                if (element.name == name && name != viewModel.accountForChange.name) {
                     flag = false
                     break
                 }
@@ -90,10 +90,10 @@ class EditAccountFragment : Fragment() {
             }
             else
             {
-                operationsViewModel.deleteAccount(operationsViewModel.accountForChange)
+                viewModel.deleteAccount(viewModel.accountForChange)
                 val editedAccount = AccountsData(0, name, balance, accountType, binding.savings.isChecked)
-                operationsViewModel.addAccount(editedAccount)
-                operationsViewModel.changeOperationAccount(name, operationsViewModel.accountForChange.name)
+                viewModel.addAccount(editedAccount)
+                viewModel.changeOperationAccount(name, viewModel.accountForChange.name)
                 findNavController().navigate(R.id.action_editAccountFragment_to_accounts)
             }
 
@@ -107,8 +107,8 @@ class EditAccountFragment : Fragment() {
                 .setTitle("Delete an account?")
                 .setMessage("The account and all operations will be deleted. This can't be undone.")
                 .setPositiveButton("YES") { dialog, which ->
-                    operationsViewModel.deleteAccount(operationsViewModel.accountForChange)
-                    operationsViewModel.deleteAccountOperations(operationsViewModel.accountForChange)
+                    viewModel.deleteAccount(viewModel.accountForChange)
+                    viewModel.deleteAccountOperations(viewModel.accountForChange)
                     findNavController().popBackStack()
                 }
                 .setNegativeButton("NO") {dialog, which ->

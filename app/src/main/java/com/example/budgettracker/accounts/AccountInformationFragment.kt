@@ -9,7 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.budgettracker.OperationsViewModel
+import com.example.budgettracker.ViewModel
 import com.example.budgettracker.R
 import com.example.budgettracker.databinding.FragmentAccountInformationBinding
 import com.example.budgettracker.operations.OperationsAdapter
@@ -28,32 +28,32 @@ class AccountInformationFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val operationsViewModel = ViewModelProvider(requireActivity()).get(OperationsViewModel::class.java)
+        val viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
         _binding = FragmentAccountInformationBinding.inflate(inflater, container, false)
         val root : View = binding.root
 
         val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         navBar.visibility = View.GONE
 
-        if (operationsViewModel.isSavingsSelected)
-            currentAccount = operationsViewModel.savingsAccounts[operationsViewModel.selectedAccountIndex]
+        if (viewModel.isSavingsSelected)
+            currentAccount = viewModel.savingsAccounts[viewModel.selectedAccountIndex]
         else
-            currentAccount = operationsViewModel.paymentAccounts[operationsViewModel.selectedAccountIndex]
+            currentAccount = viewModel.paymentAccounts[viewModel.selectedAccountIndex]
         binding.accountOperationsList.layoutManager = LinearLayoutManager(context)
         val currentAccountOperations = arrayListOf<OperationsData>()
 
-        operationsViewModel.operationsList.observe(viewLifecycleOwner, Observer {
+        viewModel.operationsList.observe(viewLifecycleOwner, Observer {
             currentAccountOperations.clear()
-            for (i in 0 until operationsViewModel.operationsList.value!!.size) {
-                if (currentAccount.name == operationsViewModel.operationsList.value!![i].account) {
-                    currentAccountOperations.add(operationsViewModel.operationsList.value!![i])
+            for (i in 0 until viewModel.operationsList.value!!.size) {
+                if (currentAccount.name == viewModel.operationsList.value!![i].account) {
+                    currentAccountOperations.add(viewModel.operationsList.value!![i])
                 }
             }
-            binding.accountOperationsList.adapter = OperationsAdapter(currentAccountOperations, findNavController(), operationsViewModel)
+            binding.accountOperationsList.adapter = OperationsAdapter(currentAccountOperations, findNavController(), viewModel)
             var currentAccountIncome = 0
             var currentAccountExpense = 0
             if (currentAccountOperations.isNotEmpty()) {
-                lastMonthOperations = operationsViewModel.divideOperationsByMonth(currentAccountOperations)[0]
+                lastMonthOperations = viewModel.divideOperationsByMonth(currentAccountOperations)[0]
                 for (element in lastMonthOperations) {
                     when(element.type) {
                         "Income" -> currentAccountIncome += element.amount.toInt()
@@ -81,8 +81,8 @@ class AccountInformationFragment : Fragment() {
                 .setTitle("Delete an account?")
                 .setMessage("The account and all operations will be deleted. This can't be undone.")
                 .setPositiveButton("YES") { dialog, which ->
-                    operationsViewModel.deleteAccount(currentAccount)
-                    operationsViewModel.deleteAccountOperations(currentAccount)
+                    viewModel.deleteAccount(currentAccount)
+                    viewModel.deleteAccountOperations(currentAccount)
                     findNavController().popBackStack()
                 }
                 .setNegativeButton("NO") {dialog, which ->
@@ -95,7 +95,7 @@ class AccountInformationFragment : Fragment() {
             findNavController().popBackStack()
         }
         binding.settings.setOnClickListener {
-            operationsViewModel.accountForChange = currentAccount
+            viewModel.accountForChange = currentAccount
             findNavController().navigate(R.id.action_accountInformationFragment_to_editAccountFragment)
         }
 

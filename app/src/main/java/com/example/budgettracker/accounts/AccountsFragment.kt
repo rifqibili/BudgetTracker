@@ -11,7 +11,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.budgettracker.R
 import com.example.budgettracker.databinding.FragmentAccountsBinding
-import com.example.budgettracker.OperationsViewModel
+import com.example.budgettracker.ViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class AccountsFragment : Fragment() {
@@ -24,24 +24,24 @@ class AccountsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val operationsViewModel = ViewModelProvider(requireActivity()).get(OperationsViewModel::class.java)
+        val viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
         _binding = FragmentAccountsBinding.inflate(inflater, container, false)
         val root : View = binding.root
 
         val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         navBar.visibility = View.VISIBLE
-        operationsViewModel.lastExpenseMonthIndex = 0
-        operationsViewModel.lastIncomeMonthIndex = 0
+        viewModel.lastExpenseMonthIndex = 0
+        viewModel.lastIncomeMonthIndex = 0
         binding.addAccount.setOnClickListener { findNavController().navigate(R.id.action_accounts_to_addAccountFragment) }
 
         binding.accountsRV.layoutManager = LinearLayoutManager(context)
 
-        operationsViewModel.allAccounts.observe(viewLifecycleOwner, Observer {
-            operationsViewModel.total()
-            binding.total.text = operationsViewModel.totalSum.toString()
-            operationsViewModel.divideAccounts()
-            binding.accountsRV.adapter = AccountsAdapter(operationsViewModel.paymentAccounts, findNavController(), operationsViewModel)
-            binding.savingsRV.adapter = AccountsAdapter(operationsViewModel.savingsAccounts, findNavController(), operationsViewModel)
+        viewModel.allAccounts.observe(viewLifecycleOwner, Observer {
+            viewModel.total()
+            binding.total.text = viewModel.totalSum.toString()
+            viewModel.divideAccounts()
+            binding.accountsRV.adapter = AccountsAdapter(viewModel.paymentAccounts, findNavController(), viewModel)
+            binding.savingsRV.adapter = AccountsAdapter(viewModel.savingsAccounts, findNavController(), viewModel)
 
         })
 
@@ -49,7 +49,7 @@ class AccountsFragment : Fragment() {
         binding.savingsRV.layoutManager = LinearLayoutManager(context)
 
 
-        operationsViewModel.totalSum.observe(viewLifecycleOwner, Observer {
+        viewModel.totalSum.observe(viewLifecycleOwner, Observer {
             binding.total.text = it.toString()
         })
 

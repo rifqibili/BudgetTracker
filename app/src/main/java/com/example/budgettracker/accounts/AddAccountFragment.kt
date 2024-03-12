@@ -3,7 +3,6 @@ package com.example.budgettracker.accounts
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.budgettracker.R
 import com.example.budgettracker.databinding.FragmentAddAccountBinding
-import com.example.budgettracker.OperationsViewModel
+import com.example.budgettracker.ViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class AddAccountFragment : Fragment() {
@@ -26,7 +25,7 @@ class AddAccountFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val operationsViewModel = ViewModelProvider(requireActivity()).get(OperationsViewModel::class.java)
+        val viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
         _binding = FragmentAddAccountBinding.inflate(inflater, container, false)
         val root : View = binding.root
 
@@ -75,12 +74,12 @@ class AddAccountFragment : Fragment() {
         }
 
         binding.save.setOnClickListener {
-            if (name.isEmpty() || !operationsViewModel.isUniqueAccountName(name)) {
+            if (name.isEmpty() || !viewModel.isUniqueAccountName(name)) {
                 binding.nameLayout.error = "Please enter a valid, unique name"
             }
             else
             {
-                operationsViewModel.addAccount(AccountsData(0, name, balance, accountType, binding.savings.isChecked))
+                viewModel.addAccount(AccountsData(0, name, balance, accountType, binding.savings.isChecked))
                 findNavController().popBackStack()
             }
 

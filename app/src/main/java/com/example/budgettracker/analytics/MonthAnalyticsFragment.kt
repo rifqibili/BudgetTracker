@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.budgettracker.OperationsViewModel
+import com.example.budgettracker.ViewModel
 import com.example.budgettracker.R
 import com.example.budgettracker.databinding.FragmentCategoryAnalyticsBinding
 import com.example.budgettracker.operations.OperationsAdapter
@@ -29,7 +29,7 @@ class MonthAnalyticsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val operationsViewModel = ViewModelProvider(requireActivity()).get(OperationsViewModel::class.java)
+        val viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
         _binding = FragmentCategoryAnalyticsBinding.inflate(inflater, container, false)
         val root : View = binding.root
 
@@ -40,22 +40,20 @@ class MonthAnalyticsFragment : Fragment() {
         val months = resources.getStringArray(R.array.months)
 
         binding.categoryName.text = ""
-        binding.monthText.text = "Total for ${months[operationsViewModel.analyzedMonthIndex]}"
+        binding.monthText.text = "Total for ${months[viewModel.analyzedMonthIndexForBar]}"
 
 
-        operationsViewModel.operationsList.observe(viewLifecycleOwner, Observer {
+        viewModel.operationsList.observe(viewLifecycleOwner, Observer {
             val monthOperations = ArrayList<OperationsData>()
             var operationsByMonth = ArrayList<ArrayList<OperationsData>>()
-            when (operationsViewModel.typeOfAnalyzedOperation) {
-                "Income" -> { operationsByMonth = operationsViewModel.divideOperationsByMonth(operationsViewModel.allIncomes) }
-                "Expense" -> { operationsByMonth = operationsViewModel.divideOperationsByMonth(operationsViewModel.allExpenses) }
+            when (viewModel.typeOfAnalyzedOperation) {
+                3 -> { operationsByMonth = viewModel.divideOperationsByMonth(viewModel.allIncomes) }
+                2 -> { operationsByMonth = viewModel.divideOperationsByMonth(viewModel.allExpenses) }
             }
             for (operationsForMonth in operationsByMonth) {
                 calendar.time = operationsForMonth[0].date
-                Log.d("TAG", calendar.get(Calendar.MONTH).toString())
-                Log.d("TAG", calendar.get(Calendar.YEAR).toString())
-                if (calendar.get(Calendar.MONTH) == operationsViewModel.analyzedMonthIndex
-                    && calendar.get(Calendar.YEAR) == operationsViewModel.selectedYear) {
+                if (calendar.get(Calendar.MONTH) == viewModel.analyzedMonthIndexForBar
+                    && calendar.get(Calendar.YEAR) == viewModel.selectedYear) {
                     for (element in operationsForMonth) {
                         monthOperations.add(element)
                     }
@@ -63,7 +61,7 @@ class MonthAnalyticsFragment : Fragment() {
             }
             var totalAmount = monthOperations.sumOf { it.amount.toInt() }
             binding.monthTotal.text = totalAmount.toString()
-            binding.categoryOperationsRV.adapter = OperationsAdapter(monthOperations, findNavController(), operationsViewModel)
+            binding.categoryOperationsRV.adapter = OperationsAdapter(monthOperations, findNavController(), viewModel)
         })
 
         binding.back.setOnClickListener {

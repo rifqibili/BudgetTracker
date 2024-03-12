@@ -12,7 +12,7 @@ import com.example.budgettracker.operations.expense.AddData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class OperationsViewModel(application: Application) : AndroidViewModel(application){
+class ViewModel(application: Application) : AndroidViewModel(application){
 
 
     private val dataBase = AppDataBase.getDatabase(application)
@@ -31,14 +31,19 @@ class OperationsViewModel(application: Application) : AndroidViewModel(applicati
     var selectedOperationIndex = 0
     lateinit var operationForChange : OperationsData
     lateinit var accountForChange : AccountsData
-    var analyzedCategoryIndex = 0
-    var analyzedCategoriesList = ArrayList<OperationsData>()
-    var analyzedMonthIndex = 0
-    var analyzedOperationsList = ArrayList<ArrayList<OperationsData>>()
-    var lastExpenseMonthIndex = 0
-    var lastIncomeMonthIndex = 0
+    var analyzedCategoryIndexIncome = 0 // index of category chosen from RV with categories for certain month (incomes pie)
+    var analyzedCategoryIndexExpense = 0 // index of category chosen from RV with categories for certain month (expenses pie)
+    var analyzedCategoriesListExpense = ArrayList<OperationsData>() // list with all categories for certain month (for expense pie)
+    var analyzedCategoriesListIncome = ArrayList<OperationsData>() // list with all categories for certain month (for income pie)
+    var analyzedMonthIndexIncome = 0 // for pie. index shows what months from list with operations by month should be analyzed (income)
+    var analyzedMonthIndexExpense = 0 // for pie. index shows what months from list with operations by month should be analyzed (expense)
+    var analyzedMonthIndexForBar = 0  // for bar. index shows what months from list with operations by month should be analyzed
+    var analyzedOperationsListExpense = ArrayList<ArrayList<OperationsData>>() // all expenses divided by month
+    var analyzedOperationsListIncome = ArrayList<ArrayList<OperationsData>>() // all incomes divided by month
+    var lastExpenseMonthIndex = 0 // index shows what month should be displayed in expense pie
+    var lastIncomeMonthIndex = 0 // index shows what month should be displayed in income pie
     var selectedYear = 0 // to divide same months from different years in analyze when touches bar diagram
-    var typeOfAnalyzedOperation = "" // Expense or Income for analyze when touches bar on bar diagram
+    var typeOfAnalyzedOperation = 0 // Expense or Income for analyze when touches bar on bar diagram
 
     fun deleteAccount(account: AccountsData) {
         viewModelScope.launch(Dispatchers.IO) {

@@ -13,7 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.budgettracker.R
-import com.example.budgettracker.OperationsViewModel
+import com.example.budgettracker.ViewModel
 import com.example.budgettracker.databinding.FragmentEditTransferBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -39,17 +39,17 @@ class EditTransferFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val operationsViewModel = ViewModelProvider(requireActivity()).get(OperationsViewModel::class.java)
+        val viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
         _binding = FragmentEditTransferBinding.inflate(inflater, container, false)
         val root : View = binding.root
 
         val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         navBar.visibility = View.GONE
 
-        amountValue = operationsViewModel.operationForChange.amount
-        accountName = operationsViewModel.operationForChange.account
-        pickedDate = operationsViewModel.operationForChange.date
-        transferTo = operationsViewModel.operationForChange.transferTo
+        amountValue = viewModel.operationForChange.amount
+        accountName = viewModel.operationForChange.account
+        pickedDate = viewModel.operationForChange.date
+        transferTo = viewModel.operationForChange.transferTo
 
         binding.amount.setText(amountValue)
         binding.amount.addTextChangedListener(
@@ -82,7 +82,7 @@ class EditTransferFragment : Fragment() {
             datePickerDialog.show()
         }
         val types = ArrayList<String>()
-        operationsViewModel.allAccounts.observe(viewLifecycleOwner, Observer {
+        viewModel.allAccounts.observe(viewLifecycleOwner, Observer {
             for (element in it){
                 if (element.name != accountName && element.name != transferTo)
                     types.add(element.name)
@@ -142,10 +142,10 @@ class EditTransferFragment : Fragment() {
         )
 
         binding.save.setOnClickListener {
-            operationsViewModel.deleteOperation(operationsViewModel.operationForChange)
+            viewModel.deleteOperation(viewModel.operationForChange)
             val operation = OperationsData(0, amountValue, R.drawable.up_right_arrow_icon, choosen[1], "Transfer",
                 pickedDate, choosen[0], choosen[1], false, 0, noteText)
-            operationsViewModel.addOperation(operation)
+            viewModel.addOperation(operation)
             findNavController().popBackStack()
         }
         binding.back.setOnClickListener {
@@ -156,7 +156,7 @@ class EditTransferFragment : Fragment() {
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Delete an operation?")
                 .setPositiveButton("YES") { dialog, which ->
-                    operationsViewModel.deleteOperation(operationsViewModel.operationForChange)
+                    viewModel.deleteOperation(viewModel.operationForChange)
                     findNavController().popBackStack()
                 }
                 .setNegativeButton("NO") {dialog, which ->

@@ -2,14 +2,12 @@ package com.example.budgettracker.operations
 
 import android.graphics.Color
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.example.budgettracker.OperationsViewModel
+import com.example.budgettracker.ViewModel
 import com.example.budgettracker.R
 import com.example.budgettracker.databinding.FragmentInformationBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -26,10 +24,10 @@ class InformationFragment : BottomSheetDialogFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val operationsViewModel = ViewModelProvider(requireActivity()).get(OperationsViewModel::class.java)
+        val viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
         _binding = FragmentInformationBinding.inflate(inflater, container, false)
         val root : View = binding.root
-        val selectedOperation = operationsViewModel.listForInformation[operationsViewModel.selectedOperationIndex]
+        val selectedOperation = viewModel.listForInformation[viewModel.selectedOperationIndex]
         val dateFormat = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
         binding.icon.setImageResource(selectedOperation.icon)
         when(selectedOperation.type) {
@@ -51,7 +49,7 @@ class InformationFragment : BottomSheetDialogFragment() {
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Delete an operation?")
                 .setPositiveButton("YES") { dialog, which ->
-                    operationsViewModel.deleteOperation(selectedOperation)
+                    viewModel.deleteOperation(selectedOperation)
                     dismiss()
                 }
                 .setNegativeButton("NO") {dialog, which ->
@@ -60,7 +58,7 @@ class InformationFragment : BottomSheetDialogFragment() {
         }
 
         binding.changeButton.setOnClickListener {
-            operationsViewModel.operationForChange = selectedOperation
+            viewModel.operationForChange = selectedOperation
             if (selectedOperation.type == "Transfer")
                 findNavController().navigate(R.id.action_informationFragment_to_changeTransferFragment)
             else

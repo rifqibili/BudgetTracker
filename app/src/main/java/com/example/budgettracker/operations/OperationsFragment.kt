@@ -18,7 +18,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.budgettracker.OperationsViewModel
+import com.example.budgettracker.ViewModel
 import com.example.budgettracker.R
 import com.example.budgettracker.databinding.FragmentOperationsBinding
 import com.google.android.material.color.MaterialColors
@@ -45,27 +45,27 @@ class OperationsFragment : Fragment() {
         _binding = FragmentOperationsBinding.inflate(inflater, container, false)
         val root : View = binding.root
 
-        val operationsViewModel = ViewModelProvider(requireActivity()).get(OperationsViewModel::class.java)
-        operationsViewModel.total()
-        operationsViewModel.lastExpenseMonthIndex = 0
-        operationsViewModel.lastIncomeMonthIndex = 0
+        val viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
+        viewModel.total()
+        viewModel.lastExpenseMonthIndex = 0
+        viewModel.lastIncomeMonthIndex = 0
         val snackbar = Snackbar.make(binding.snackbarContainer, "Operation deleted", Snackbar.LENGTH_LONG)
         snackbar.setAction("Undo") {
             deletedOperation.isForDelete = false
-            operationsViewModel.undoDelete(deletedOperation)
+            viewModel.undoDelete(deletedOperation)
         }
             .setActionTextColor(MaterialColors.getColor(requireContext(), com.google.android.material.R.attr.colorPrimary,context?.getResources()!!.getColor(
                 com.google.android.material.R.color.primary_material_light)))
 
 
-        operationsViewModel.allAccounts.observe(viewLifecycleOwner, Observer {
+        viewModel.allAccounts.observe(viewLifecycleOwner, Observer {
             if (it.isNotEmpty()){
-                operationsViewModel.total()
-                binding.totalAmount.text = operationsViewModel.totalSum.value.toString()
+                viewModel.total()
+                binding.totalAmount.text = viewModel.totalSum.value.toString()
             }
         })
 
-        operationsViewModel.totalSum.observe(viewLifecycleOwner, Observer {
+        viewModel.totalSum.observe(viewLifecycleOwner, Observer {
             binding.totalAmount.text = it.toString()
         })
 
@@ -73,8 +73,8 @@ class OperationsFragment : Fragment() {
         binding.operationsList.layoutManager = LinearLayoutManager(context)
 
 
-        operationsViewModel.operationsList.observe(viewLifecycleOwner, Observer {
-            binding.operationsList.adapter = OperationsAdapter(it, findNavController(), operationsViewModel)
+        viewModel.operationsList.observe(viewLifecycleOwner, Observer {
+            binding.operationsList.adapter = OperationsAdapter(it, findNavController(), viewModel)
         })
 
         val itemTouchHelper = ItemTouchHelper(
@@ -83,8 +83,8 @@ class OperationsFragment : Fragment() {
                 ItemTouchHelper.RIGHT,
                 object : CustomItemTouchHelperCallback.OnSwipeListener {
                     override fun onSwipe(viewHolder: RecyclerView.ViewHolder) {
-                        operationsViewModel.deleteOperation(operationsViewModel.operationsList.value!![viewHolder.adapterPosition])
-                        deletedOperation = operationsViewModel.operationsList.value!![viewHolder.adapterPosition]
+                        viewModel.deleteOperation(viewModel.operationsList.value!![viewHolder.adapterPosition])
+                        deletedOperation = viewModel.operationsList.value!![viewHolder.adapterPosition]
                         snackbar.show()
                     }
                 }

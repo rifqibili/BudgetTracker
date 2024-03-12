@@ -13,15 +13,11 @@ import android.widget.ArrayAdapter
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
 import com.example.budgettracker.R
-import com.example.budgettracker.databinding.FragmentAddIncomeBinding
 import com.example.budgettracker.operations.OperationsData
-import com.example.budgettracker.OperationsViewModel
+import com.example.budgettracker.ViewModel
 import com.example.budgettracker.databinding.FragmentTransferBinding
-import com.example.budgettracker.operations.expense.AddData
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.gson.GsonBuilder
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -39,7 +35,7 @@ class TransferFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val operationsViewModel = ViewModelProvider(requireActivity()).get(OperationsViewModel::class.java)
+        val viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
         _binding = FragmentTransferBinding.inflate(inflater, container, false)
         val root : View = binding.root
 
@@ -111,7 +107,7 @@ class TransferFragment : Fragment() {
             datePickerDialog.show()
         }
         val types = ArrayList<String>()
-        operationsViewModel.allAccounts.observe(viewLifecycleOwner, Observer {
+        viewModel.allAccounts.observe(viewLifecycleOwner, Observer {
             for (element in it){
                 types.add(element.name)
             }
@@ -173,7 +169,7 @@ class TransferFragment : Fragment() {
                 (binding.accountTypeTo.text.isNotEmpty() && binding.accountTypeFrom.text.isNotEmpty()) -> {
                     val operation = OperationsData(0, amountValue, R.drawable.up_right_arrow_icon,
                         choosen[1], "Transfer", pickedDate, choosen[0], choosen[1], false, 0, note)
-                    operationsViewModel.addOperation(operation)
+                    viewModel.addOperation(operation)
                     findNavController().navigate(R.id.action_transferFragment_to_operations)
                 }
             }

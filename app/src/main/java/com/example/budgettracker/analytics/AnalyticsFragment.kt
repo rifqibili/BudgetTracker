@@ -7,10 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import com.example.budgettracker.OperationsViewModel
+import com.example.budgettracker.ViewModel
 import com.example.budgettracker.R
 import com.example.budgettracker.databinding.FragmentAnalyticsBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
 
@@ -23,7 +24,7 @@ class AnalyticsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val operationsViewModel = ViewModelProvider(requireActivity()).get(OperationsViewModel::class.java)
+        val viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
         _binding = FragmentAnalyticsBinding.inflate(inflater, container, false)
         val root : View = binding.root
 
@@ -36,7 +37,7 @@ class AnalyticsFragment : Fragment() {
         var adapter = AnalyticsAdapter(requireActivity(), fragmentList)
         binding.vp2.adapter = adapter
 
-        operationsViewModel.operationsList.observe(viewLifecycleOwner, Observer {
+        viewModel.operationsList.observe(viewLifecycleOwner, Observer {
             adapter = AnalyticsAdapter(requireActivity(), fragmentList)
             binding.vp2.adapter = adapter
         })
@@ -44,6 +45,17 @@ class AnalyticsFragment : Fragment() {
         TabLayoutMediator(binding.tabLayout, binding.vp2) {
             tab, pos -> tab.text = tabsText[pos]
         }.attach()
+
+        binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                val position = tab?.position ?: 0
+
+                viewModel.typeOfAnalyzedOperation = position
+            }
+            override fun onTabUnselected(p0: TabLayout.Tab?) {}
+            override fun onTabReselected(p0: TabLayout.Tab?) {}
+
+        })
 
         return root
     }

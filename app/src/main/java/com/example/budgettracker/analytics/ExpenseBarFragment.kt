@@ -9,9 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.budgettracker.LinearRegressionModel
-import com.example.budgettracker.OperationsViewModel
+import com.example.budgettracker.ViewModel
 import com.example.budgettracker.R
-import com.example.budgettracker.databinding.FragmentExpenseBarBinding
+import com.example.budgettracker.databinding.FragmentBarBinding
 import com.example.budgettracker.operations.OperationsData
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
@@ -23,11 +23,10 @@ import com.github.mikephil.charting.formatter.LargeValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.ColorTemplate.rgb
-import com.google.android.material.color.MaterialColors
 import java.util.Calendar
 
 class ExpenseBarFragment : Fragment() {
-    private var _binding : FragmentExpenseBarBinding? = null
+    private var _binding : FragmentBarBinding? = null
     private val binding get() = _binding!!
     private lateinit var months : Array<String>
     var expenseMap = mutableMapOf<Float, Float>()
@@ -42,8 +41,8 @@ class ExpenseBarFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val operationsViewModel = ViewModelProvider(requireActivity()).get(OperationsViewModel::class.java)
-        _binding = FragmentExpenseBarBinding.inflate(inflater, container, false)
+        val viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
+        _binding = FragmentBarBinding.inflate(inflater, container, false)
         val root : View = binding.root
 
         val customColors = intArrayOf(
@@ -52,9 +51,9 @@ class ExpenseBarFragment : Fragment() {
 
         months = resources.getStringArray(R.array.shortMonths)
         labels = months
-        operationsViewModel.divideExpenses(operationsViewModel.operationsList.value!!)
+        viewModel.divideExpenses(viewModel.operationsList.value!!)
 
-        val expenseDataList = operationsViewModel.divideOperationsByMonth(operationsViewModel.allExpenses)
+        val expenseDataList = viewModel.divideOperationsByMonth(viewModel.allExpenses)
         if (expenseDataList.isNotEmpty()) {
             calendar.time = expenseDataList[0][0].date
             selectedYear = calendar.get(Calendar.YEAR)
@@ -87,9 +86,9 @@ class ExpenseBarFragment : Fragment() {
                 // another method shown below
                 val nonFloat = binding.barChart.xAxis.valueFormatter.getFormattedValue(e.x)
                 //binding.yearText.text = selectedXAxisCount
-                operationsViewModel.analyzedMonthIndex = selectedXAxisCount.toInt()
-                operationsViewModel.selectedYear = selectedYear
-                operationsViewModel.typeOfAnalyzedOperation = "Expense"
+                viewModel.analyzedMonthIndexForBar = selectedXAxisCount.toInt()
+                viewModel.selectedYear = selectedYear
+                //viewModel.typeOfAnalyzedOperation.value = 2
                 findNavController().navigate(R.id.action_analytics_to_monthAnalyticsFragment)
             }
 
