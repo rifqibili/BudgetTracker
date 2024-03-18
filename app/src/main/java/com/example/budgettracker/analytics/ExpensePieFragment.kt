@@ -71,7 +71,7 @@ class ExpensePieFragment : Fragment() {
             for (i in 0 until resultList.size) {
                 resultList[i].color = customColors[i % customColors.size]
             }
-            resultList.sortByDescending { it.amount.toInt() }
+            resultList.sortByDescending { it.amount.toDouble() }
             binding.operationsRV.adapter = PieAdapter(resultList, findNavController(), viewModel)
             viewModel.analyzedCategoriesListExpense = resultList
             viewModel.analyzedMonthIndexExpense = selectedMonthIndex
@@ -90,7 +90,7 @@ class ExpensePieFragment : Fragment() {
                 for (i in 0 until resultList.size) {
                     resultList[i].color = customColors[i]
                 }
-                resultList.sortByDescending { it.amount.toInt() }
+                resultList.sortByDescending { it.amount.toDouble() }
                 binding.operationsRV.adapter = PieAdapter(resultList, findNavController(), viewModel)
                 viewModel.analyzedCategoriesListExpense = resultList
                 viewModel.analyzedMonthIndexExpense = selectedMonthIndex
@@ -106,7 +106,7 @@ class ExpensePieFragment : Fragment() {
                 for (i in 0 until resultList.size) {
                     resultList[i].color = customColors[i]
                 }
-                resultList.sortByDescending { it.amount.toInt() }
+                resultList.sortByDescending { it.amount.toDouble() }
                 binding.operationsRV.adapter = PieAdapter(resultList, findNavController(), viewModel)
                 viewModel.analyzedCategoriesListExpense = resultList
                 viewModel.analyzedMonthIndexExpense = selectedMonthIndex
@@ -119,7 +119,7 @@ class ExpensePieFragment : Fragment() {
     private fun setupPie(selectedMonthIndex : Int, expenseDataList : ArrayList<ArrayList<OperationsData>>, customColors : IntArray) {
         val entries = ArrayList<PieEntry>()
         categoriesMap = mutableMapOf()
-        var totalForMonth = 0
+        var totalForMonth = 0.0
 
         val calendar = Calendar.getInstance()
         if (expenseDataList.isNotEmpty()) {
@@ -133,7 +133,7 @@ class ExpensePieFragment : Fragment() {
                 val amount = expenseDataList[selectedMonthIndex][i].amount.toFloat()
                 val color = customColors[i % customColors.size]
                 categoriesMap[category] = Pair(categoriesMap.getOrDefault(category, Pair(0f, color)).first + amount, color)
-                totalForMonth += amount.toInt()
+                totalForMonth += amount.toDouble()
             }
         }
 
@@ -160,7 +160,7 @@ class ExpensePieFragment : Fragment() {
         binding.pieChart.description.isEnabled = false
         binding.pieChart.legend.isEnabled = false
         binding.pieChart.setCenterTextSize(24f)
-        if (totalForMonth != 0) {
+        if (totalForMonth != 0.0) {
             binding.pieChart.centerText = totalForMonth.toString()
         }
         binding.pieChart.animateY(1000)

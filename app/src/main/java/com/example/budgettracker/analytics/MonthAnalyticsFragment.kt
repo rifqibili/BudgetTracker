@@ -59,7 +59,7 @@ class MonthAnalyticsFragment : Fragment() {
                     }
                 }
             }
-            var totalAmount = monthOperations.sumOf { it.amount.toInt() }
+            var totalAmount = monthOperations.sumOf { it.amount.toDouble() }
             binding.monthTotal.text = totalAmount.toString()
             binding.categoryOperationsRV.adapter = OperationsAdapter(monthOperations, findNavController(), viewModel)
         })

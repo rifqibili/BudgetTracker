@@ -50,14 +50,14 @@ class AccountInformationFragment : Fragment() {
                 }
             }
             binding.accountOperationsList.adapter = OperationsAdapter(currentAccountOperations, findNavController(), viewModel)
-            var currentAccountIncome = 0
-            var currentAccountExpense = 0
+            var currentAccountIncome = 0.0
+            var currentAccountExpense = 0.0
             if (currentAccountOperations.isNotEmpty()) {
                 lastMonthOperations = viewModel.divideOperationsByMonth(currentAccountOperations)[0]
                 for (element in lastMonthOperations) {
                     when(element.type) {
-                        "Income" -> currentAccountIncome += element.amount.toInt()
-                        "Expense" -> currentAccountExpense += element.amount.toInt()
+                        "Income" -> currentAccountIncome += element.amount.toDouble()
+                        "Expense" -> currentAccountExpense += element.amount.toDouble()
                     }
                 }
             }

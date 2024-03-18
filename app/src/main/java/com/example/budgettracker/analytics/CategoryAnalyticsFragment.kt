@@ -54,16 +54,18 @@ class CategoryAnalyticsFragment : Fragment() {
 
 
         viewModel.operationsList.observe(viewLifecycleOwner, Observer {
-            if (viewModel.analyzedMonthIndexExpense >= viewModel.analyzedOperationsListExpense.size) {
+            if (viewModel.analyzedMonthIndexExpense >= viewModel.analyzedOperationsListExpense.size
+                && viewModel.analyzedMonthIndexExpense != 0) {
                 viewModel.analyzedMonthIndexExpense--
                 viewModel.lastExpenseMonthIndex--
             }
-            if (viewModel.analyzedMonthIndexIncome >= viewModel.analyzedOperationsListIncome.size) {
+            if (viewModel.analyzedMonthIndexIncome >= viewModel.analyzedOperationsListIncome.size
+                && viewModel.analyzedMonthIndexIncome != 0) {
                 viewModel.analyzedMonthIndexIncome--
                 viewModel.lastIncomeMonthIndex--
             }
             categoryOperations.clear()
-            var totalAmount = 0
+            var totalAmount = 0.0
             when (viewModel.typeOfAnalyzedOperation) {
                 0 -> {
                     if (viewModel.analyzedOperationsListExpense.size != 0) {
@@ -73,7 +75,7 @@ class CategoryAnalyticsFragment : Fragment() {
                                 calendar.time = categoryOperations[0].date
                             }
                         }
-                        totalAmount = categoryOperations.sumOf { it.amount.toInt() }
+                        totalAmount = categoryOperations.sumOf { it.amount.toDouble() }
 
 
                     }
@@ -88,7 +90,7 @@ class CategoryAnalyticsFragment : Fragment() {
                             }
                         }
 
-                        totalAmount = categoryOperations.sumOf { it.amount.toInt() }
+                        totalAmount = categoryOperations.sumOf { it.amount.toDouble() }
 
                     }
                 }

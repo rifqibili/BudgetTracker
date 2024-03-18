@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.budgettracker.accounts.AccountsData
 import com.example.budgettracker.operations.OperationsData
 import com.example.budgettracker.operations.expense.AddData
+import com.example.budgettracker.plans.LimitsData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -18,9 +19,11 @@ class ViewModel(application: Application) : AndroidViewModel(application){
     private val dataBase = AppDataBase.getDatabase(application)
     private val operationsDao = dataBase.operationDao()
     private val accountsDao = dataBase.accountDao()
+    private val limitsDao = dataBase.limitsDao()
     val operationsList : LiveData<List<OperationsData>> = operationsDao.getAllOperations()
     val allAccounts : LiveData<List<AccountsData>> = accountsDao.getAllAccounts()
-    var totalSum = MutableLiveData<Int>()
+    val allLimits : LiveData<List<LimitsData>> = limitsDao.getAllLimits()
+    var totalSum = MutableLiveData<Double>()
     val paymentAccounts = arrayListOf<AccountsData>()
     val savingsAccounts = arrayListOf<AccountsData>()
     val allExpenses = arrayListOf<OperationsData>()
@@ -44,6 +47,14 @@ class ViewModel(application: Application) : AndroidViewModel(application){
     var lastIncomeMonthIndex = 0 // index shows what month should be displayed in income pie
     var selectedYear = 0 // to divide same months from different years in analyze when touches bar diagram
     var typeOfAnalyzedOperation = 0 // Expense or Income for analyze when touches bar on bar diagram
+
+
+
+    fun addLimit(limit : LimitsData){
+        viewModelScope.launch(Dispatchers.IO) {
+            limitsDao.insertLimit(limit)
+        }
+    }
 
     fun deleteAccount(account: AccountsData) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -123,12 +134,12 @@ class ViewModel(application: Application) : AndroidViewModel(application){
         val result = arrayListOf<OperationsData>()
         val blackList = arrayListOf<String>()
         for (i in 0 until list.size) {
-            var totalAmount = 0
+            var totalAmount = 0.0
             var operationsCount = 0
             if (list[i].category !in blackList) {
                 for (j in 0 until list.size) {
                     if (list[i].category == list[j].category) {
-                        totalAmount += list[j].amount.toInt()
+                        totalAmount += list[j].amount.toDouble()
                         operationsCount++
                     }
                 }
@@ -176,10 +187,10 @@ class ViewModel(application: Application) : AndroidViewModel(application){
         }
     }
 
-    private fun calculateTotal(): Int {
-        var sum = 0
+    private fun calculateTotal(): Double {
+        var sum = 0.0
         for (i in 0 until (allAccounts.value?.size ?: 0)) {
-            sum += allAccounts.value!![i].balance.toInt()
+            sum += allAccounts.value!![i].balance.toDouble()
         }
         return sum
     }
@@ -193,12 +204,12 @@ class ViewModel(application: Application) : AndroidViewModel(application){
                     val amountMultiplier = if (!operation.isForDelete) 1 else -1
 
                     when (operation.type) {
-                        "Income" -> updateBalance(accountsList[i], amountMultiplier * operation.amount.toInt())
-                        "Expense" -> updateBalance(accountsList[i], -amountMultiplier * operation.amount.toInt())
+                        "Income" -> updateBalance(accountsList[i], amountMultiplier * operation.amount.toDouble())
+                        "Expense" -> updateBalance(accountsList[i], -amountMultiplier * operation.amount.toDouble())
                         "Transfer" -> {
                             val transferTo = accountsList.first { it.name == operation.transferTo }
-                            updateBalance(accountsList[i], -amountMultiplier * operation.amount.toInt())
-                            updateBalance(transferTo, amountMultiplier * operation.amount.toInt())
+                            updateBalance(accountsList[i], -amountMultiplier * operation.amount.toDouble())
+                            updateBalance(transferTo, amountMultiplier * operation.amount.toDouble())
                         }
                     }
                 }
@@ -206,8 +217,8 @@ class ViewModel(application: Application) : AndroidViewModel(application){
         }
     }
 
-    fun updateBalance(account: AccountsData, amount: Int) {
-        account.balance = (account.balance.toInt() + amount).toString()
+    fun updateBalance(account: AccountsData, amount: Double) {
+        account.balance = (account.balance.toDouble() + amount).toString()
         accountsDao.updateAccount(account)
     }
 

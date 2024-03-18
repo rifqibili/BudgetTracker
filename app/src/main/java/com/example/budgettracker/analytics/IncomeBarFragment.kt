@@ -120,8 +120,8 @@ class IncomeBarFragment : Fragment() {
                 allMonths.add(index)
                 if (year == selectedYear) {
                     for (j in 0 until incomeDataList[i].size) {
-                        val amount = incomeDataList[i][j].amount.toInt()
-                        incomeMap[month] = incomeMap.getOrDefault(month, 0f) + amount
+                        val amount = incomeDataList[i][j].amount.toDouble()
+                        incomeMap[month] = (incomeMap.getOrDefault(month, 0f) + amount).toFloat()
                     }
                 }
             }

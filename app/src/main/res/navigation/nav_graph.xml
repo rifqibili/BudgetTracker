@@ -142,7 +142,10 @@
             app:popExitAnim="@anim/fade_out" />
         <action
             android:id="@+id/action_analytics_to_monthAnalyticsFragment"
-            app:destination="@id/monthAnalyticsFragment" />
+            app:destination="@id/monthAnalyticsFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popExitAnim="@anim/fade_out" />
     </fragment>
     <fragment
         android:id="@+id/accountInformationFragment"
@@ -225,4 +228,9 @@
         android:id="@+id/monthAnalyticsFragment"
         android:name="com.example.budgettracker.analytics.MonthAnalyticsFragment"
         android:label="MonthAnalyticsFragment" />
+    <fragment
+        android:id="@+id/plans"
+        android:name="com.example.budgettracker.plans.PlansFragment"
+        android:label="fragment_plans"
+        tools:layout="@layout/fragment_plans" />
 </navigation>

@@ -15,7 +15,8 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
-class OperationsAdapter(val list: List<OperationsData>, val findNavController: NavController, val viewModel: ViewModel) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class OperationsAdapter(val list: List<OperationsData>, val findNavController: NavController, val viewModel: ViewModel) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemViewType(position: Int): Int {
         if (position == 0){
             return 0

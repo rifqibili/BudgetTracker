@@ -119,7 +119,7 @@
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/accountFrom"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="5"
@@ -129,7 +129,8 @@
                         <com.google.android.material.textfield.MaterialAutoCompleteTextView
                             android:id="@+id/accountTypeFrom"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                             android:inputType="none"
                             android:textSize="18sp" />
 
@@ -140,6 +141,7 @@
                         style="@style/Widget.AppCompat.Button.Borderless"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:layout_marginBottom="10dp"
                         android:layout_weight="1"
                         android:paddingLeft="0dp"
                         android:paddingTop="10dp"
@@ -154,7 +156,7 @@
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/accountTo"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginBottom="10dp"
@@ -164,9 +166,9 @@
 
                         <com.google.android.material.textfield.MaterialAutoCompleteTextView
                             android:id="@+id/accountTypeTo"
-                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
                             android:inputType="none"
                             android:textSize="18sp" />
 

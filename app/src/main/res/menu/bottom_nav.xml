@@ -14,6 +14,10 @@
         android:id="@+id/operations"
         android:icon="@drawable/baseline_swap_horiz_24"/>
     <item
+        android:id="@+id/plans"
+        android:icon="@drawable/plans_icon"
+        android:title="Plans" />
+    <item
         android:id="@+id/analytics"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

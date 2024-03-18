@@ -118,8 +118,8 @@ class ExpenseBarFragment : Fragment() {
                 allMonths.add(index)
                 if (year == selectedYear) {
                     for (j in 0 until expenseDataList[i].size) {
-                        val amount = expenseDataList[i][j].amount.toInt()
-                        expenseMap[month] = expenseMap.getOrDefault(month, 0f) + amount
+                        val amount = expenseDataList[i][j].amount.toDouble()
+                        expenseMap[month] = (expenseMap.getOrDefault(month, 0f) + amount).toFloat()
                     }
                 }
             }

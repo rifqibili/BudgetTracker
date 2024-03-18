@@ -115,7 +115,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:ems="10"
-                        android:inputType="number"
+                        android:inputType="number|numberDecimal"
                         android:textSize="30sp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
