@@ -11,13 +11,16 @@ import com.example.budgettracker.operations.OperationsDao
 import com.example.budgettracker.operations.OperationsData
 import com.example.budgettracker.plans.LimitsDao
 import com.example.budgettracker.plans.LimitsData
+import com.example.budgettracker.plans.PlannedOperation
+import com.example.budgettracker.plans.PlannedOperationDao
 
-@Database(entities = [OperationsData::class, AccountsData::class, LimitsData::class], version = 1)
+@Database(entities = [OperationsData::class, AccountsData::class, LimitsData::class, PlannedOperation::class], version = 1)
 @TypeConverters(Converters::class)
 abstract class AppDataBase : RoomDatabase(){
     abstract fun operationDao() : OperationsDao
     abstract fun accountDao() : AccountsDao
     abstract fun limitsDao() : LimitsDao
+    abstract fun plannedOperationsDao() : PlannedOperationDao
 
     companion object {
         @Volatile

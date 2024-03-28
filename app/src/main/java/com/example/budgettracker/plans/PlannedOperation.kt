@@ -1,10 +1,11 @@
-package com.example.budgettracker.operations
+package com.example.budgettracker.plans
+
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.Date
 
-@Entity(tableName = "operations")
-data class OperationsData(
+@Entity(tableName = "plans")
+data class PlannedOperation(
     @PrimaryKey(autoGenerate = true) var id : Int,
     var amount: String,
     var icon : Int,
@@ -12,8 +13,6 @@ data class OperationsData(
     var type : String,
     var date : Date,
     var account : String,
-    val transferTo : String,
-    var isForDelete : Boolean,
-    var color : Int,
-    var note : String
+    var note : String,
+    val code : Int
 )

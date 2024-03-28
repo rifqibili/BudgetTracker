@@ -5,6 +5,7 @@
     <string name="expense">Expense</string>
     <string name="income">Income</string>
     <string name="note">Note</string>
+    <string name="channel_name">Channel name</string>
 
     <string-array name="accountTypes">
         <item>Cash</item>

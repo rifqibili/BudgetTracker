@@ -49,6 +49,8 @@ class OperationsFragment : Fragment() {
         viewModel.total()
         viewModel.lastExpenseMonthIndex = 0
         viewModel.lastIncomeMonthIndex = 0
+
+
         val snackbar = Snackbar.make(binding.snackbarContainer, "Operation deleted", Snackbar.LENGTH_LONG)
         snackbar.setAction("Undo") {
             deletedOperation.isForDelete = false

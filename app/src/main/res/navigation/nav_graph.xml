@@ -233,4 +233,8 @@
         android:name="com.example.budgettracker.plans.PlansFragment"
         android:label="fragment_plans"
         tools:layout="@layout/fragment_plans" />
+    <dialog
+        android:id="@+id/notificationInformation"
+        android:name="com.example.budgettracker.plans.NotificationInformation"
+        android:label="NotificationInformation" />
 </navigation>

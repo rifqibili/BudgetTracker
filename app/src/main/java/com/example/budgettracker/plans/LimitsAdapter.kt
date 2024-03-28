@@ -1,21 +1,28 @@
 package com.example.budgettracker.plans
 
 
-import android.content.res.ColorStateList
-import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.budgettracker.R
 
-class LimitsAdapter(val list : List<LimitsData>, val findNavController: NavController, val viewModel : ViewModel) :
+class LimitsAdapter(val list : List<LimitsData>, val findNavController: NavController, val viewModel : com.example.budgettracker.ViewModel) :
     RecyclerView.Adapter<LimitsAdapter.ViewHolder>() {
+    interface OnItemLongClickListener {
+        fun onItemLongClick(position: Int)
+    }
+
+    private var onItemLongClickListener: OnItemLongClickListener? = null
+
+    fun setOnItemLongClickListener(listener: OnItemLongClickListener) {
+        this.onItemLongClickListener = listener
+    }
+
     class ViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
         val image : ImageView = itemView.findViewById(R.id.icon)
         val progressBar : DualColorProgressBar = itemView.findViewById(R.id.progressBar)
@@ -34,13 +41,36 @@ class LimitsAdapter(val list : List<LimitsData>, val findNavController: NavContr
         val resId = holder.itemView.resources.getIdentifier(resIdName, "drawable", holder.itemView.context.packageName)
         holder.image.setImageResource(resId)
         holder.categoryName.text = list[position].categoryName
-        holder.amount.text = list[position].value.toString()
+
 
         holder.progressBar.max = 150
 
-        // Установка текущего значения прогресса
-        holder.progressBar.progress = 101 // Измените значение в соответствии с вашими потребностями
+
+        var progress = 0.0
+
+        val expenses = viewModel.divideOperationsByMonth(viewModel.allExpenses)
+        Log.d("TAG", "${viewModel.allExpenses.size}")
+        if (expenses.isNotEmpty()){
+            for (element in expenses[0]) {
+                if (element.category == list[position].categoryName) {
+                    progress += element.amount.toDouble()
+                }
+            }
+        }
+
+        holder.amount.text = "Spended $progress of ${list[position].value}"
+
+        progress = (progress / list[position].value) * 100
+        Log.d("TAG", "$progress")
+
+        holder.progressBar.progress = progress.toInt()
+
+        holder.itemView.setOnLongClickListener {
+            onItemLongClickListener?.onItemLongClick(position)
+            true
+        }
 
 
     }
 }
+

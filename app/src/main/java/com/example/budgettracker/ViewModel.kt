@@ -10,6 +10,7 @@ import com.example.budgettracker.accounts.AccountsData
 import com.example.budgettracker.operations.OperationsData
 import com.example.budgettracker.operations.expense.AddData
 import com.example.budgettracker.plans.LimitsData
+import com.example.budgettracker.plans.PlannedOperation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -20,9 +21,11 @@ class ViewModel(application: Application) : AndroidViewModel(application){
     private val operationsDao = dataBase.operationDao()
     private val accountsDao = dataBase.accountDao()
     private val limitsDao = dataBase.limitsDao()
+    private val plannedOperationDao = dataBase.plannedOperationsDao()
     val operationsList : LiveData<List<OperationsData>> = operationsDao.getAllOperations()
     val allAccounts : LiveData<List<AccountsData>> = accountsDao.getAllAccounts()
     val allLimits : LiveData<List<LimitsData>> = limitsDao.getAllLimits()
+    val allPlannedOperations : LiveData<List<PlannedOperation>> = plannedOperationDao.getAllPlannedOperations()
     var totalSum = MutableLiveData<Double>()
     val paymentAccounts = arrayListOf<AccountsData>()
     val savingsAccounts = arrayListOf<AccountsData>()
@@ -47,12 +50,30 @@ class ViewModel(application: Application) : AndroidViewModel(application){
     var lastIncomeMonthIndex = 0 // index shows what month should be displayed in income pie
     var selectedYear = 0 // to divide same months from different years in analyze when touches bar diagram
     var typeOfAnalyzedOperation = 0 // Expense or Income for analyze when touches bar on bar diagram
+    var selectedPlannedOperationIndex = 0 // Index of planned operation in allPlannedOperations list, for showing correct information
 
 
+    fun addPlannedOperation(plannedOperation: PlannedOperation) {
+        viewModelScope.launch(Dispatchers.IO) {
+            plannedOperationDao.insertPlannedOperation(plannedOperation)
+        }
+    }
 
-    fun addLimit(limit : LimitsData){
+    fun deletePlannedOperation(plannedOperation: PlannedOperation) {
+        viewModelScope.launch(Dispatchers.IO) {
+            plannedOperationDao.deletePlannedOperation(plannedOperation)
+        }
+    }
+
+    fun addLimit(limit : LimitsData) {
         viewModelScope.launch(Dispatchers.IO) {
             limitsDao.insertLimit(limit)
+        }
+    }
+
+    fun deleteLimit(limit: LimitsData) {
+        viewModelScope.launch(Dispatchers.IO) {
+            limitsDao.deleteLimit(limit)
         }
     }
 
