@@ -9,7 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.budgettracker.ViewModel
+import com.example.budgettracker.MainViewModel
 import com.example.budgettracker.R
 import com.example.budgettracker.databinding.FragmentAccountInformationBinding
 import com.example.budgettracker.operations.OperationsAdapter
@@ -28,7 +28,7 @@ class AccountInformationFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
+        val viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
         _binding = FragmentAccountInformationBinding.inflate(inflater, container, false)
         val root : View = binding.root
 

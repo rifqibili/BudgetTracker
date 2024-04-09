@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.budgettracker.R
 import com.example.budgettracker.databinding.FragmentAddIncomeBinding
 import com.example.budgettracker.operations.OperationsData
-import com.example.budgettracker.ViewModel
+import com.example.budgettracker.MainViewModel
 import com.example.budgettracker.operations.expense.AddData
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.gson.GsonBuilder
@@ -40,7 +40,7 @@ class IncomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
+        val viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
         _binding = FragmentAddIncomeBinding.inflate(inflater, container, false)
         val root : View = binding.root
 

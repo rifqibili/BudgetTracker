@@ -9,11 +9,11 @@ import android.widget.TextView
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.budgettracker.R
-import com.example.budgettracker.ViewModel
+import com.example.budgettracker.MainViewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class NotificationsAdapter(val list: List<PlannedOperation>, val findNavController: NavController, val viewModel: ViewModel)
+class NotificationsAdapter(val list: List<PlannedOperation>, val findNavController: NavController, val viewModel: MainViewModel)
     : RecyclerView.Adapter<NotificationsAdapter.ViewHolder>() {
 
         /*

@@ -14,7 +14,7 @@ import com.example.budgettracker.plans.PlannedOperation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class ViewModel(application: Application) : AndroidViewModel(application){
+class MainViewModel(application: Application) : AndroidViewModel(application){
 
 
     private val dataBase = AppDataBase.getDatabase(application)

@@ -12,7 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.budgettracker.R
 import com.example.budgettracker.databinding.FragmentAddAccountBinding
-import com.example.budgettracker.ViewModel
+import com.example.budgettracker.MainViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class AddAccountFragment : Fragment() {
@@ -25,7 +25,7 @@ class AddAccountFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
+        val viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
         _binding = FragmentAddAccountBinding.inflate(inflater, container, false)
         val root : View = binding.root
 

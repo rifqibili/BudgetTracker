@@ -1,11 +1,12 @@
 package com.example.budgettracker
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import android.provider.Settings
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
@@ -18,14 +19,20 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding : ActivityMainBinding
     private var operationAddedFromNotification = false
     private lateinit var plannedOperation : PlannedOperation
+    private val NOTIFICATION_CHANNEL_ID = "my_channel_id"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
+        if (!isNotificationPermissionGranted()) {
+            requestNotificationPermission()
+        }
+
         val fromNotification = intent.getBooleanExtra("fromNotification", false)
-        val viewModel = ViewModelProvider(this).get(ViewModel::class.java)
+        val viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
 
         if (fromNotification) {
@@ -62,5 +69,14 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
+    private fun isNotificationPermissionGranted(): Boolean {
+        return NotificationManagerCompat.from(this).areNotificationsEnabled()
+    }
+    private fun requestNotificationPermission() {
+        NotificationManagerCompat.from(this).apply {
+            val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+            intent.putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
+            startActivity(intent)
+        }
+    }
 }

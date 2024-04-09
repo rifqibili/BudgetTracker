@@ -13,7 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.budgettracker.R
-import com.example.budgettracker.ViewModel
+import com.example.budgettracker.MainViewModel
 import com.example.budgettracker.databinding.FragmentEditTransferBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -39,7 +39,7 @@ class EditTransferFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
+        val viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
         _binding = FragmentEditTransferBinding.inflate(inflater, container, false)
         val root : View = binding.root
 

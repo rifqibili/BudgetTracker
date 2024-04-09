@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.budgettracker.LinearRegressionModel
-import com.example.budgettracker.ViewModel
+import com.example.budgettracker.MainViewModel
 import com.example.budgettracker.R
 import com.example.budgettracker.databinding.FragmentBarBinding
 import com.example.budgettracker.operations.OperationsData
@@ -41,7 +41,7 @@ class ExpenseBarFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
+        val viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
         _binding = FragmentBarBinding.inflate(inflater, container, false)
         val root : View = binding.root
 

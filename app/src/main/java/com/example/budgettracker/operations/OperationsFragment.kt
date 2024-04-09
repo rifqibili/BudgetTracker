@@ -18,7 +18,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.budgettracker.ViewModel
+import com.example.budgettracker.MainViewModel
 import com.example.budgettracker.R
 import com.example.budgettracker.databinding.FragmentOperationsBinding
 import com.google.android.material.color.MaterialColors
@@ -45,7 +45,7 @@ class OperationsFragment : Fragment() {
         _binding = FragmentOperationsBinding.inflate(inflater, container, false)
         val root : View = binding.root
 
-        val viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
+        val viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
         viewModel.total()
         viewModel.lastExpenseMonthIndex = 0
         viewModel.lastIncomeMonthIndex = 0
@@ -140,7 +140,6 @@ class OperationsFragment : Fragment() {
             }
             true
         }
-
 
         return root
     }

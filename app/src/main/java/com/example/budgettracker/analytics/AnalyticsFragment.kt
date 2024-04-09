@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import com.example.budgettracker.ViewModel
+import com.example.budgettracker.MainViewModel
 import com.example.budgettracker.R
 import com.example.budgettracker.databinding.FragmentAnalyticsBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -24,7 +24,7 @@ class AnalyticsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
+        val viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
         _binding = FragmentAnalyticsBinding.inflate(inflater, container, false)
         val root : View = binding.root
 

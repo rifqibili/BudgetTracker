@@ -2,7 +2,6 @@ package com.example.budgettracker.analytics
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,15 +9,13 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.budgettracker.ViewModel
+import com.example.budgettracker.MainViewModel
 import com.example.budgettracker.R
 import com.example.budgettracker.databinding.FragmentCategoryAnalyticsBinding
 import com.example.budgettracker.operations.OperationsAdapter
 import com.example.budgettracker.operations.OperationsData
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import java.time.LocalDate
 import java.util.Calendar
-import java.util.Date
 
 
 class CategoryAnalyticsFragment : Fragment() {
@@ -31,7 +28,7 @@ class CategoryAnalyticsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
+        val viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
         _binding = FragmentCategoryAnalyticsBinding.inflate(inflater, container, false)
         val root : View = binding.root
 

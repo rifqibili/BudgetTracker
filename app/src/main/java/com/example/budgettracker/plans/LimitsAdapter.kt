@@ -11,7 +11,7 @@ import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.budgettracker.R
 
-class LimitsAdapter(val list : List<LimitsData>, val findNavController: NavController, val viewModel : com.example.budgettracker.ViewModel) :
+class LimitsAdapter(val list : List<LimitsData>, val findNavController: NavController, val viewModel : com.example.budgettracker.MainViewModel) :
     RecyclerView.Adapter<LimitsAdapter.ViewHolder>() {
     interface OnItemLongClickListener {
         fun onItemLongClick(position: Int)

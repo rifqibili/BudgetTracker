@@ -23,4 +23,10 @@
         android:layout_height="wrap_content"
         android:icon="@drawable/analytics_icon"
         android:title="Analytics" />
+    <item
+        android:id="@+id/settings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/settings_icon"
+        android:title="Settings" />
 </menu>

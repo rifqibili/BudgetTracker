@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/operations">
+    app:startDestination="@id/authenticationFragment">
 
     <fragment
         android:id="@+id/accounts"
@@ -51,6 +51,10 @@
             app:exitAnim="@anim/to_left"
             app:popEnterAnim="@anim/from_left"
             app:popExitAnim="@anim/to_right" />
+        <action
+            android:id="@+id/action_operations_to_authenticationFragment"
+            app:destination="@id/authenticationFragment" />
+
     </fragment>
     <fragment
         android:id="@+id/addExpenseFragment"
@@ -237,4 +241,17 @@
         android:id="@+id/notificationInformation"
         android:name="com.example.budgettracker.plans.NotificationInformation"
         android:label="NotificationInformation" />
+    <fragment
+        android:id="@+id/authenticationFragment"
+        android:name="com.example.budgettracker.authentication.AuthenticationFragment"
+        android:label="AuthenticationFragment" >
+        <action
+            android:id="@+id/action_authenticationFragment_to_operations"
+            app:destination="@id/operations" />
+    </fragment>
+    <fragment
+        android:id="@+id/settings"
+        android:name="com.example.budgettracker.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" />
 </navigation>

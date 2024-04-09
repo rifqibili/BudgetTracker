@@ -22,19 +22,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Button
-import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.RadioButton
 import android.widget.RadioGroup
-import android.widget.TimePicker
 import android.widget.Toast
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.Observer
 import com.example.budgettracker.R
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.budgettracker.ViewModel
+import com.example.budgettracker.MainViewModel
 import com.example.budgettracker.databinding.FragmentPlansBinding
 import com.example.budgettracker.operations.expense.AddData
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -62,7 +59,7 @@ class PlansFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         createNotificationChannel()
-        val viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
+        val viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
         _binding = FragmentPlansBinding.inflate(inflater, container, false)
         val root : View = binding.root
 

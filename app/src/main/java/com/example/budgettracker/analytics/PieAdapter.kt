@@ -7,11 +7,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
-import com.example.budgettracker.ViewModel
+import com.example.budgettracker.MainViewModel
 import com.example.budgettracker.R
 import com.example.budgettracker.operations.OperationsData
 
-class PieAdapter(val list: List<OperationsData>, val findNavController: NavController, val viewModel: ViewModel) :
+class PieAdapter(val list: List<OperationsData>, val findNavController: NavController, val viewModel: MainViewModel) :
     RecyclerView.Adapter<PieAdapter.ViewHolder>() {
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val image : ImageView = itemView.findViewById(R.id.image)

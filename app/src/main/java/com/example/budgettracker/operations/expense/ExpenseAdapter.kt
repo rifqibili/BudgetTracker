@@ -7,10 +7,10 @@ import android.widget.RadioButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.budgettracker.R
-import com.example.budgettracker.ViewModel
+import com.example.budgettracker.MainViewModel
 
 
-class ExpenseAdapter(val list : List<AddData>, val viewModel: ViewModel) : RecyclerView.Adapter<ExpenseAdapter.ViewHolder>() {
+class ExpenseAdapter(val list : List<AddData>, val viewModel: MainViewModel) : RecyclerView.Adapter<ExpenseAdapter.ViewHolder>() {
 
     private var isNewRadioButtonChecked = false
     private var lastCheckedPosition = -1
