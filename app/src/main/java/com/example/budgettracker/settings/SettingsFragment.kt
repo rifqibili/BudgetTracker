@@ -1,4 +1,4 @@
-package com.example.budgettracker
+package com.example.budgettracker.settings
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.example.budgettracker.MainViewModel
+import com.example.budgettracker.R
 import com.example.budgettracker.databinding.FragmentSettingsBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth

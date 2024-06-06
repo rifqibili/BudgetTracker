@@ -2,7 +2,10 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="app">
+      <entry key="AuthenticationFragmentTest">
+        <State />
+      </entry>
+      <entry key="OperationsFragmentTest">
         <State>
           <targetSelectedWithDropDown>
             <Target>
@@ -15,8 +18,30 @@
               </deviceKey>
             </Target>
           </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-04-09T18:20:56.801544500Z" />
+          <timeTargetWasSelectedWithDropDown value="2024-04-21T16:07:24.408575Z" />
         </State>
+      </entry>
+      <entry key="app">
+        <State>
+          <targetSelectedWithDropDown>
+            <Target>
+              <type value="QUICK_BOOT_TARGET" />
+              <deviceKey>
+                <Key>
+                  <type value="VIRTUAL_DEVICE_PATH" />
+                  <value value="C:\Users\gmy-2\.android\avd\Pixel_6_API_34.avd" />
+                </Key>
+              </deviceKey>
+            </Target>
+          </targetSelectedWithDropDown>
+          <timeTargetWasSelectedWithDropDown value="2024-05-20T13:56:34.543144900Z" />
+        </State>
+      </entry>
+      <entry key="testFABInitiallyClosed()">
+        <State />
+      </entry>
+      <entry key="testNavigationToAddExpense()">
+        <State />
       </entry>
     </value>
   </component>
